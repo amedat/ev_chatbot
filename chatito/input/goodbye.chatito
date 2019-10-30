@@ -1,0 +1,31 @@
+// Ways to say goodbye
+
+import ./common.chatito
+
+%[goodbye]('training': '25', 'testing': '25')
+    *[20%] ~[au revoir]
+    ~[merci?] ~[au revoir]
+    ~[au revoir] ~[merci?]
+    ~[je quitte]
+    ~[je quitte] ~[au revoir]
+
+~[au revoir]
+    au revoir
+    aurevoir
+    adieu
+    a+
+    à la prochaine
+    à plus tard
+    on se voit bientôt
+    bye
+    adieu
+    adios
+    chao
+
+~[je quitte]
+    je quitte
+    je dois y aller
+    il faut que je parte
+    y faut que je parte
+    je sors
+    je pars

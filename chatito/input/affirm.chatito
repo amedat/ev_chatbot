@@ -1,0 +1,29 @@
+// Ways to say yes
+
+import ./common.chatito
+
+%[affirm]('training': '50', 'testing': '50')
+    *[20%] ~[oui]
+    ~[oui] ~[svp?]
+    ~[oui] ~[oui?] ~[merci?]
+    ~[oui?] ~[c'est bon] ~[oui?]
+
+~[oui]
+    oui
+    ouais
+    certainement
+    affirmatif
+    d'accord
+    correcte
+    oui monsieur
+
+~[c'est bon]
+    c'est bon
+    c'est ok
+    c'est correcte
+    c'est parfait
+    c'est ça
+    je le veux
+    c'est ce que veux
+    t'as compris
+    parfait

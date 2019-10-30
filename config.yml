@@ -1,0 +1,24 @@
+# Configuration for Rasa NLU.
+# https://rasa.com/docs/rasa/nlu/components/
+#language: en
+language: fr
+
+# Below is the pipeline equivalent to this template:
+#   pipeline: "pretrained_embeddings_spacy"
+
+pipeline:
+- name: "SpacyNLP"
+- name: "SpacyTokenizer"
+- name: "SpacyFeaturizer"
+- name: "RegexFeaturizer"
+- name: "CRFEntityExtractor"
+- name: "EntitySynonymMapper"
+- name: "SklearnIntentClassifier"
+
+
+# Configuration for Rasa Core.
+# https://rasa.com/docs/rasa/core/policies/
+policies:
+  - name: MemoizationPolicy
+  - name: KerasPolicy
+  - name: MappingPolicy

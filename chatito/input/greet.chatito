@@ -1,0 +1,25 @@
+// Ways to say hello
+
+import ./common.chatito
+
+%[greet]('training': '25', 'testing': '25')
+    *[20%] ~[bonjour]
+    ~[salutations]
+    ~[bonjour] ~[salutations?]
+    ~[bonjour] ~[quoi de neuf]
+    ~[salutations] ~[quoi de neuf]
+
+~[salutations]
+    salutations
+    bon matin
+    bonne après-midi
+    bonne soirée
+    bonne nuit
+    bonne journée
+
+~[quoi de neuf]
+    quoi de neuf
+    comment ça va
+    comment vas-tu
+    comment vont les affaires
+    as-tu du neuf

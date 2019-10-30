@@ -1,0 +1,88 @@
+import ./common.chatito
+import ./slots.chatito
+
+%[ask_charging_point_near_metro]('training': '1000', 'testing': '200')
+    ~[bornes] ~[près du métro] @[metro]
+    ~[bonjour?] ~[où sont les] ~[bornes] ~[près du métro] @[metro]
+    ~[près du métro] @[metro] ~[combien de?] ~[bornes]
+    ~[combien de?] ~[bornes] ~[près du métro] @[metro] ~[merci?]
+    ~[svp?] ~[combien de?] ~[bornes] ~[près du métro] @[metro]
+    ~[comment recharger] ~[près du métro] @[metro]
+
+
+~[combien de]
+    combien de
+    combien y-a-t-il de
+    combien y a de
+    y-a-t-il des
+    est-ce qu'il y des
+    y as-tu des
+    il y a combien de
+    y a combien de
+
+~[près du métro]
+    près du métro
+    proche du métro
+    autour du métro
+    à côté du métro
+    au métro
+    dans le coin du métro
+    dans le bout du métro
+    dans les alentour du métro
+    collé sur le métro
+    à proximité du métro
+    accessible du métro
+    voisin du métro
+    près de la station
+    proche de la station
+    autour de la station
+    à côté de la station
+    à la station
+    dans le coin de la station
+    dans le bout de la station
+    dans les alentour de la station
+    collé sur la station
+    à proximité de la station
+    accessible de la station
+    voisin de la station
+    près de la station de métro
+    proche de la station de métro
+    autour de la station de métro
+    à côté de la station de métro
+    à la station de métro
+    dans le coin de la station de métro
+    dans le bout de la station de métro
+    dans les alentour de la station de métro
+    collé sur la station de métro
+    à proximité de la station de métro
+    accessible de la station de métro
+    voisin de la station de métro
+
+~[où sont les]
+    où
+    où est-ce qu'on trouve des
+    où sont les
+    où ce qu'y sont les
+    y sont où les
+    où se recharger
+    où on se charge
+    où est-ce qu'on peut se recharger
+
+~[comment recharger]
+    comment recharger
+    comment recharger ma voiture
+    comment recharger mon véhicule
+    comment trouver une borne
+    comment on charge
+    comment on fait pour charger
+    comment on trouve une borne
+    comment se brancher
+    recharger
+    se recharger
+    où se brancher
+    se brancher
+    à quel endroit se brancher
+    est-ce que je peux me brancher
+    est-ce qu'on peux se brancher
+    peut-on se brancher
+    on se branche où

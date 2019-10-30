@@ -1,0 +1,19 @@
+// Ways to say good mood
+
+import ./common.chatito
+
+%[mood_great]('training': '15', 'testing': '10')
+    ~[merci?] ~[ça va bien]
+    ~[ça va bien] ~[merci?] ~[c'est gentil?]
+
+~[ça va bien]
+    bien
+    ça va bien
+    je vais très bien
+    super, merci!
+    très bien
+    merci, je vais bien
+
+~[c'est gentil]
+    c'est gentil
+    très aimable
