@@ -11,10 +11,6 @@ class ActionChargingPointInCity(Action):
         return "action_charging_point_in_city"
 
     @staticmethod
-    def normalize_city_name(name):
-        return name.title()
-
-    @staticmethod
     def count_charging_point_in_city(graph, city_name):
         return graph.run("MATCH (City {name:{cityName}})<-[:IN*]-(p:ChargingPoint) RETURN count(p)",
                          cityName=city_name).evaluate()
@@ -23,7 +19,7 @@ class ActionChargingPointInCity(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        city_name = self.normalize_city_name(tracker.get_slot('city')) if tracker.get_slot('city') else None
+        city_name = tracker.get_slot('city')
 
         if city_name:
             graph = Graph(password='abcd')
