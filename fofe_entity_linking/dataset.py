@@ -12,7 +12,8 @@ import pandas as pd
 from io import StringIO
 from torch.utils.data import Dataset
 
-from fofe_entity_linking.embedding import NgramHashing, NgramEmbedding, Fofe
+# from fofe_entity_linking.embedding import NgramHashing, NgramEmbedding, Fofe
+from .embedding import NgramHashing, NgramEmbedding, Fofe
 
 
 class FofeDataset(Dataset):

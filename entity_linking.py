@@ -1,5 +1,8 @@
+import hashlib
 import logging
 import pickle
+import os
+import subprocess
 
 import fofe_entity_linking.predict as predict
 
@@ -27,24 +30,47 @@ class CityMetro(Component):
     def __init__(self, component_config=None):
         super(CityMetro, self).__init__(component_config)
 
+        # load cities model
         self.cities_model, self.cities_embedding = predict.load_models(
-                                                "./fofe_entity_linking/models/cities_fofe_model.pth",
+                                                "./fofe_entity_linking/models/cities.pth",
                                                 "./fofe_entity_linking/data/cities_embedding.pth",
                                                 "./fofe_entity_linking/data/cities_vocab.pickle")
         with open("./fofe_entity_linking/data/cities_training_labels.pickle", "rb") as cities_label_file:
             self.cities_labels, _, _ = pickle.load(cities_label_file)
         logger.info(f"*** {len(self.cities_labels)} cities ***")
 
+        # load metro model
         self.metro_model, self.metro_embedding = predict.load_models(
-                                                "./fofe_entity_linking/models/metro_fofe_model.pth",
+                                                "./fofe_entity_linking/models/metro.pth",
                                                 "./fofe_entity_linking/data/metro_embedding.pth",
                                                 "./fofe_entity_linking/data/metro_vocab.pickle")
         with open("./fofe_entity_linking/data/metro_training_labels.pickle", "rb") as metro_label_file:
             self.metro_labels, _, _ = pickle.load(metro_label_file)
         logger.info(f"*** {len(self.metro_labels)} metro stations ***")
 
+    @staticmethod
+    def train_model(model_name, script_path, data_filename):
+        if CityMetro.data_changed(data_filename):
+            CityMetro.run_training_subprocess(model_name, script_path, data_filename)
+        else:
+            logger.info(f"*** <{data_filename}> did not change. No need to retrain. ***")
+
+    @staticmethod
+    def run_training_subprocess(model_name, script_path, data_filename):
+        logger.info(f"*** training {model_name} ***")
+        completed_process = subprocess.run([script_path])
+
+        if completed_process.returncode == 0:
+            CityMetro.save_md5_file(data_filename)
+        else:
+            logger.error(f"*** training {model_name} - error returncode={completed_process.returncode} ***")
+
     def train(self, training_data, cfg, **kwargs):
-        pass
+        cities_data_filename = "./fofe_entity_linking/cities.csv"
+        metro_data_filename = "./fofe_entity_linking/metro.csv"
+
+        self.train_model("cities", "./train_cities.sh", cities_data_filename)
+        self.train_model("metro", "./train_metro.sh", metro_data_filename)
 
     @staticmethod
     def expand_saint_abreviation(s):
@@ -98,3 +124,42 @@ class CityMetro(Component):
     def persist(self, file_name, model_dir):
         """ Persist this component to disk for future loading. """
         pass
+
+    @staticmethod
+    def data_changed(filename):
+        """
+        Compare md5 value of specified file to detect changes.
+        Returns True if file has changed or no previous md5 file saved, False otherwise.
+        """
+        if os.path.exists(filename):
+            if os.path.exists(filename + '.md5'):
+                # compute the md5 of the input file and compare to saved md5
+                current_md5 = CityMetro.md5(filename)
+
+                # read saved md5
+                with open(filename + '.md5', 'r') as md5_file:
+                    saved_md5 = md5_file.read()
+
+                # compare to saved md5
+                return (current_md5 != saved_md5)
+            else:
+                # md5 do not exists, then need to train
+                return True
+        else:
+            logger.error(f"*** <{filename}> do not exists ***")
+
+        return False
+
+    @staticmethod
+    def md5(fname):
+        hash_md5 = hashlib.md5()
+        with open(fname, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+
+    @staticmethod
+    def save_md5_file(filename):
+        md5_hash = CityMetro.md5(filename)
+        with open(filename + '.md5', 'w') as md5_file:
+            md5_file.write(md5_hash)

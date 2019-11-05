@@ -2,9 +2,9 @@ import argparse
 import pickle
 import torch
 
-from fofe_entity_linking.dataset import DatasetGenerator
-from fofe_entity_linking.embedding import NgramEmbedding, Fofe
-from fofe_entity_linking.model import FofeNNModel
+from .dataset import DatasetGenerator
+from .embedding import NgramEmbedding, Fofe
+from .model import FofeNNModel
 
 
 use_cuda = torch.cuda.is_available()
@@ -83,4 +83,3 @@ if __name__ == "__main__":
         values, indices = prediction.topk(5)
         for rank, indice in enumerate(indices[0]):
             print(f'top {rank+1}: {labels[indice]}')
-

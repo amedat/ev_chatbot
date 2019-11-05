@@ -14,9 +14,9 @@ from torch.utils.data import DataLoader
 from sklearn import metrics
 from tqdm import tqdm
 
-from model import FofeNNModel
-from dataset import FofeDataset
-from embedding import NgramEmbedding
+from .model import FofeNNModel
+from .dataset import FofeDataset
+from .embedding import NgramEmbedding
 
 
 def train(model, training_generator, optimizer, criterion):
@@ -155,6 +155,7 @@ def run(args, embedding=None, labels_weight=None):
     # model output folder
     if not os.path.exists(args.output):
         os.makedirs(args.output)
+    model_output_filename = os.path.join(args.output, args.model_name + ".pth")
 
     log_name = args.log_path + args.model_name
     print(log_name)
@@ -249,7 +250,7 @@ def run(args, embedding=None, labels_weight=None):
             best_loss = val_loss
             best_epoch = epoch
             if args.checkpoint == 1 and val_accuracy > 0.97:
-                torch.save(model, args.output+'fofe_{}_epoch_{}_loss_{}.pth'.format(args.model_name, epoch, round(val_loss, 4)))
+                torch.save(model.state_dict(), model_output_filename)
                 collect_bad_predictions = True
         else:
             collect_bad_predictions = False
@@ -263,7 +264,7 @@ def run(args, embedding=None, labels_weight=None):
             break
 
     # save last epoch
-    torch.save(model, args.output+'fofe_{}_epoch_{}_loss_{}.pth'.format(args.model_name, epoch, round(val_loss, 4)))
+    torch.save(model.state_dict(), model_output_filename)
 
     if writer:
         writer.close()
