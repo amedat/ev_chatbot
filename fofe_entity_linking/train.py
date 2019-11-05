@@ -208,6 +208,7 @@ def run(args, embedding=None, labels_weight=None):
     elif args.optimizer == 'adam':
         optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
+    model_saved = False
     collect_bad_predictions = False
     best_loss = 1e10
     best_epoch = 0
@@ -252,6 +253,7 @@ def run(args, embedding=None, labels_weight=None):
             if args.checkpoint == 1 and val_accuracy > 0.97:
                 torch.save(model.state_dict(), model_output_filename)
                 collect_bad_predictions = True
+                model_saved = True
         else:
             collect_bad_predictions = False
 
@@ -263,8 +265,9 @@ def run(args, embedding=None, labels_weight=None):
             print("Stop training at epoch {}. The lowest loss achieved is {} at epoch {}".format(epoch, val_loss, best_epoch))
             break
 
-    # save last epoch
-    torch.save(model.state_dict(), model_output_filename)
+    # save last epoch, if not done yet
+    if not model_saved:
+        torch.save(model.state_dict(), model_output_filename)
 
     if writer:
         writer.close()
