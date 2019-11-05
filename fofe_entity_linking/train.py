@@ -79,7 +79,7 @@ def print_bad_predictions(bad_predictions, sample_list=None):
     print('truth\t\tpred\n')
     for pred_idx, true_idx, idx in bad_predictions:
         if sample_list:
-            print(f"{sample_list[idx]} ({labels[true_idx]})\t->{labels[pred_idx]}")
+            print(f"{sample_list[idx]} ({labels[true_idx]})  -->  {labels[pred_idx]}")
         else:
             print(f"{labels[true_idx]}\t-->\t{labels[pred_idx]}")
 

@@ -79,18 +79,31 @@ class CityMetro(Component):
 
     @staticmethod
     def expand_saint_abreviation(s):
-        # todo - use a regular expression to avoid this mistake while replacing:
-        #        Saint-Just-de-Bretenières  --> Saint-Jusaint-de-Bretenières
-        #        Saint-Juste-du-Lac         --> Saint-Jusainte-du-Lac
         s = s.lower()
-        s = s.replace('ste-', 'sainte-', 1)
-        s = s.replace('ste ', 'sainte ', 1)
-        s = s.replace('st-', 'saint-', 1)
-        s = s.replace('st ', 'saint ', 1)
+
+        # replace "st-" by "saint-" only when it's start with or is preceeded by a space or a dash.
+        # to avoid situation like this:
+        #        Saint-Juste-du-Lac  -->  Saint-Jusainte-du-Lac
+        i = s.find('st-')
+        if i >= 0 and (i == 0 or s[i-1] in [' ','-']):
+            s = s.replace('st-', 'saint-', 1)
+
+        i = s.find('st ')
+        if i >= 0 and (i == 0 or s[i - 1] in [' ', '-']):
+            s = s.replace('st ', 'saint ', 1)
+
+        i = s.find('ste-')
+        if i >= 0 and (i == 0 or s[i-1] in [' ','-']):
+            s = s.replace('ste-', 'sainte-', 1)
+
+        i = s.find('ste ')
+        if i >= 0 and (i == 0 or s[i - 1] in [' ', '-']):
+            s = s.replace('ste ', 'sainte ', 1)
+
         return s
 
     @staticmethod
-    def link_entity(text, model, embedding, labels, max_length=50):
+    def link_entity_model_inference(text, model, embedding, labels, max_length=50):
         prediction = predict.predict(model, embedding, text, max_length)
 
         max = prediction.argmax(1)[0]
@@ -102,16 +115,17 @@ class CityMetro(Component):
     def link(entities, model, embedding, labels, exact_map):
         for i, entity in enumerate(entities):
             text = CityMetro.expand_saint_abreviation(entity.get('value'))
+            normalize_name = CityMetro.normalize_name(text)
 
             # check for a direct match in dictionnary before running the NN Model
-            linked_name = exact_map.get(CityMetro.normalize_name(text))
+            linked_name = exact_map.get(normalize_name)
             if not linked_name:
                 # ask the entity linking NN Model to predict the entity name
-                linked_name = CityMetro.link_entity(text, model, embedding, labels)
-                logger.info(f"*** entity linked from <{text}> to <{linked_name}> ***")
+                linked_name = CityMetro.link_entity_model_inference(normalize_name, model, embedding, labels)
+                logger.info(f"*** entity linked from <{normalize_name}> to <{linked_name}> ***")
 
             entities[i]['value'] = linked_name
-            entities[i]['extractor'] = CityMetro.name
+            entities[i]['entity linking'] = "entity_linking.CityMetro"
 
         return entities
 
@@ -148,9 +162,16 @@ class CityMetro(Component):
         # lower case and accents removed
         s = unidecode.unidecode(s).lower().strip()
 
+        # remove spaces around dash
+        s = s.replace(" - ", ' ')
+
         # replace apostrophe and dash by space
         s = s.replace("-", ' ')
         s = s.replace("'", ' ')
+
+        # replace multiple spaces by a single space
+        s = s.replace("   ", ' ')
+        s = s.replace("  ", ' ')
 
         return s
 
