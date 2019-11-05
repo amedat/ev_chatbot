@@ -3,10 +3,11 @@ import logging
 import pickle
 import os
 import subprocess
+import unidecode
 
 import fofe_entity_linking.predict as predict
 
-from rasa_nlu.components import Component
+from rasa.nlu.components import Component
 
 
 logger = logging.getLogger(__name__)
@@ -29,6 +30,13 @@ class CityMetro(Component):
 
     def __init__(self, component_config=None):
         super(CityMetro, self).__init__(component_config)
+
+        self.cities_data_filename = "./fofe_entity_linking/cities.csv"
+        self.metro_data_filename = "./fofe_entity_linking/metro.csv"
+
+        # create exact match map from data
+        self.exact_map_cities = self.create_exact_map(self.cities_data_filename)
+        self.exact_map_metro = self.create_exact_map(self.metro_data_filename)
 
         # load cities model
         self.cities_model, self.cities_embedding = predict.load_models(
@@ -66,11 +74,8 @@ class CityMetro(Component):
             logger.error(f"*** training {model_name} - error returncode={completed_process.returncode} ***")
 
     def train(self, training_data, cfg, **kwargs):
-        cities_data_filename = "./fofe_entity_linking/cities.csv"
-        metro_data_filename = "./fofe_entity_linking/metro.csv"
-
-        self.train_model("cities", "./train_cities.sh", cities_data_filename)
-        self.train_model("metro", "./train_metro.sh", metro_data_filename)
+        self.train_model("cities", "./train_cities.sh", self.cities_data_filename)
+        self.train_model("metro", "./train_metro.sh", self.metro_data_filename)
 
     @staticmethod
     def expand_saint_abreviation(s):
@@ -94,11 +99,16 @@ class CityMetro(Component):
         return predicted_label
 
     @staticmethod
-    def link(entities, model, embedding, labels):
+    def link(entities, model, embedding, labels, exact_map):
         for i, entity in enumerate(entities):
             text = CityMetro.expand_saint_abreviation(entity.get('value'))
-            linked_name = CityMetro.link_entity(text, model, embedding, labels)
-            logger.info(f"*** entity linked from <{text}> to <{linked_name}> ***")
+
+            # check for a direct match in dictionnary before running the NN Model
+            linked_name = exact_map.get(CityMetro.normalize_name(text))
+            if not linked_name:
+                # ask the entity linking NN Model to predict the entity name
+                linked_name = CityMetro.link_entity(text, model, embedding, labels)
+                logger.info(f"*** entity linked from <{text}> to <{linked_name}> ***")
 
             entities[i]['value'] = linked_name
             entities[i]['extractor'] = CityMetro.name
@@ -115,8 +125,8 @@ class CityMetro(Component):
         metro_entities = [e for e in message.data.get('entities') if e['entity'] == 'metro']
 
         entities = []
-        entities += self.link(city_entities, self.cities_model, self.cities_embedding, self.cities_labels)
-        entities += self.link(metro_entities, self.metro_model, self.metro_embedding, self.metro_labels)
+        entities += self.link(city_entities, self.cities_model, self.cities_embedding, self.cities_labels, self.exact_map_cities)
+        entities += self.link(metro_entities, self.metro_model, self.metro_embedding, self.metro_labels, self.exact_map_metro)
 
         if entities:
             message.set("entities", entities, add_to_output=True)
@@ -124,6 +134,25 @@ class CityMetro(Component):
     def persist(self, file_name, model_dir):
         """ Persist this component to disk for future loading. """
         pass
+
+    @staticmethod
+    def create_exact_map(data_filename):
+        """ Create a map of normalized version of the entity with the entity. """
+        with open(data_filename) as f:
+            content = f.readlines()
+
+        return {CityMetro.normalize_name(entity): entity.strip() for entity in content}
+
+    @staticmethod
+    def normalize_name(s):
+        # lower case and accents removed
+        s = unidecode.unidecode(s).lower().strip()
+
+        # replace apostrophe and dash by space
+        s = s.replace("-", ' ')
+        s = s.replace("'", ' ')
+
+        return s
 
     @staticmethod
     def data_changed(filename):
