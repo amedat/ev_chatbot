@@ -1,0 +1,51 @@
+# --- python 3.6 ---
+conda create -n mmelaprise python=3.6
+conda activate mmelaprise
+
+# --- PyTorch 1.1.0 ---
+conda install pytorch-cpu==1.1.0 torchvision-cpu==0.3.0 cpuonly -c pytorch
+#conda install pytorch==1.1.0 torchvision==0.3.0 cudatoolkit=9.0 -c pytorch
+
+#pip install rasa-x --extra-index-url https://pypi.rasa.com/simple
+# --- Rasa 1.2.9 ---
+wget https://github.com/RasaHQ/rasa/archive/1.2.9.zip && unzip 1.2.9.zip
+cd ~/rasa-1.2.9
+pip install -r requirements.txt --user --force-reinstall
+pip install . --user --force-reinstall
+
+# --- clone ev_chatbot repo ---
+git clone https://github.com/menardai/ev_chatbot.git
+cd ev_chatbot
+pip install --requirement requirements.txt
+
+# --- Spacy (fr packages) ---
+python -m spacy download fr
+
+# --- TRAIN ---
+rasa train
+
+# --- NEO4J ---
+# download and install Neo4J
+# suivre instruction dans /knowledgebase/preprocessing/README.txt
+
+# --- START ACTIONS SERVER ---
+rasa run actions
+
+# --- RUN ---
+rasa shell
+
+# --------------------------------------------------
+#  Hook to Google Assistant
+# --------------------------------------------------
+conda activate mmelaprise
+
+rasa run --enable-api -p 5004
+rasa run actions
+ngrok http 5004
+
+copy ngrok url (ex: http://2415582a.ngrok.io) to action.json
+chmod +x gactions
+./gactions update --action_package action.json --project madame-laprise
+./gactions test --action_package action.json --project madame-laprise
+
+
