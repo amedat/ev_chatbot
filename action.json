@@ -1,0 +1,42 @@
+{
+   "actions": [
+      {
+        "description": "Default Welcome Intent",
+        "name": "MAIN",
+        "fulfillment": {
+          "conversationName": "welcome"
+        },
+        "intent": {
+          "name": "actions.intent.MAIN",
+          "trigger": {
+            "queryPatterns":["parler à Madame Laprise"]
+          }
+        }
+      },
+	  {
+        "description": "Rasa Intent",
+        "name": "TEXT",
+        "fulfillment": {
+          "conversationName": "rasa_intent"
+        },
+        "intent": {
+          "name": "actions.intent.TEXT",
+          "trigger": {
+            "queryPatterns":[]
+          }
+        }
+      }],
+    "conversations": {
+      "welcome": {
+        "name": "welcome",
+        "url": "https://6e6cbd00.ngrok.io/webhooks/google_assistant/webhook",
+        "fulfillmentApiVersion": 2
+    },
+      "rasa_intent": {
+        "name": "rasa_intent",
+        "url": "https://6e6cbd00.ngrok.io/webhooks/google_assistant/webhook",
+        "fulfillmentApiVersion": 2
+    }
+  },
+  "locale": "fr"
+}
