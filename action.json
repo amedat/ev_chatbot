@@ -9,7 +9,7 @@
         "intent": {
           "name": "actions.intent.MAIN",
           "trigger": {
-            "queryPatterns":["parler à Madame Laprise"]
+            "queryPatterns":["Parler à Madame Laprise"]
           }
         }
       },
@@ -29,12 +29,12 @@
     "conversations": {
       "welcome": {
         "name": "welcome",
-        "url": "https://6e6cbd00.ngrok.io/webhooks/google_assistant/webhook",
+        "url": "https://2415582a.ngrok.io/webhooks/google_assistant/webhook",
         "fulfillmentApiVersion": 2
     },
       "rasa_intent": {
         "name": "rasa_intent",
-        "url": "https://6e6cbd00.ngrok.io/webhooks/google_assistant/webhook",
+        "url": "https://2415582a.ngrok.io/webhooks/google_assistant/webhook",
         "fulfillmentApiVersion": 2
     }
   },

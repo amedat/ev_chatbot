@@ -44,6 +44,10 @@ rasa run actions
 ngrok http 5004
 
 copy ngrok url (ex: http://2415582a.ngrok.io) to action.json
+
+Download Google gactions CLI and place it inside your project directory:
+    https://developers.google.com/assistant/tools/gactions-cli
+
 chmod +x gactions
 ./gactions update --action_package action.json --project madame-laprise
 ./gactions test --action_package action.json --project madame-laprise
