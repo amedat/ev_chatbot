@@ -1,0 +1,9 @@
+#pytorch1-1-0
+#rasa1-2-9
+spacy
+py2neo
+pandas
+unidecode
+scikit-learn
+numpy
+tqdm

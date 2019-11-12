@@ -266,7 +266,7 @@ def run(args, embedding=None, labels_weight=None):
             break
 
     # save last epoch, if not done yet
-    if not model_saved:
+    if not model_saved or True:
         torch.save(model.state_dict(), model_output_filename)
 
     if writer:
@@ -279,7 +279,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser('FOFE-based NN for text classification')
 
     parser.add_argument('--data_path', type=str, default='./data/metro_training_set.csv')
-    parser.add_argument('--data_testset_path', type=str, default='./data/metro_test_set.csv')
+    parser.add_argument('--data_testset_path', type=str)
 
     parser.add_argument('--label_weight_path', type=str, default='./data/metro_training_labels.pickle')
     parser.add_argument('--vocab_path', type=str, default='./data/metro_vocab.pickle')

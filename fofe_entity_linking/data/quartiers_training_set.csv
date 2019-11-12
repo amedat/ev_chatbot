@@ -1,0 +1,721 @@
+EntityMention,EntityName
+anjou,0
+a_jou,0
+anj_u,0
+_njou,0
+an_ou,0
+anjo_,0
+verdun,1
+verd_n,1
+ve_dun,1
+v_rdun,1
+verdu_,1
+_erdun,1
+ver_un,1
+lachine,2
+lachin_,2
+_achine,2
+la_hine,2
+lachi_e,2
+lac_ine,2
+l_chine,2
+lach_ne,2
+lasalle,3
+lasall_,3
+_asalle,3
+l_salle,3
+la_alle,3
+las_lle,3
+lasa_le,3
+lasal_e,3
+ahuntsic,4
+ah_ntsic,4
+ahuntsi_,4
+a_untsic,4
+_huntsic,4
+ahunts_c,4
+ahu_tsic,4
+ahun_sic,4
+ahunt_ic,4
+rosemont,5
+r_semont,5
+rosem_nt,5
+_osemont,5
+rosemon_,5
+rose_ont,5
+rosemo_t,5
+ro_emont,5
+ros_mont,5
+villeray,6
+vill_ray,6
+viller_y,6
+v_lleray,6
+ville_ay,6
+vi_leray,6
+villera_,6
+_illeray,6
+vil_eray,6
+outremont,7
+_utremont,7
+outrem_nt,7
+outremon_,7
+outre_ont,7
+outr_mont,7
+o_tremont,7
+outremo_t,7
+ou_remont,7
+out_emont,7
+nord ouest,8
+nord oue_t,8
+nord o_est,8
+nord_ouest,8
+nord _uest,8
+_ord ouest,8
+n_rd ouest,8
+no_d ouest,8
+nor_ ouest,8
+nord oues_,8
+nord ou_st,8
+le plateau,9
+le pla_eau,9
+l_ plateau,9
+le _lateau,9
+le pl_teau,9
+_e plateau,9
+le platea_,9
+le plat_au,9
+le p_ateau,9
+le plate_u,9
+le_plateau,9
+plateau,9
+plate_u,9
+p_ateau,9
+pl_teau,9
+platea_,9
+pla_eau,9
+_lateau,9
+plat_au,9
+mercier est,10
+me_cier est,10
+_ercier est,10
+mercier_est,10
+mercier e_t,10
+mercier es_,10
+mercier _st,10
+mercie_ est,10
+merci_r est,10
+merc_er est,10
+mer_ier est,10
+est,10
+es_,10
+e_t,10
+_st,10
+saint henri,11
+saint_henri,11
+sai_t henri,11
+saint _enri,11
+saint henr_,11
+sain_ henri,11
+s_int henri,11
+saint he_ri,11
+_aint henri,11
+sa_nt henri,11
+saint hen_i,11
+henri,11
+hen_i,11
+henr_,11
+h_nri,11
+_enri,11
+he_ri,11
+ville emard,12
+ville_emard,12
+v_lle emard,12
+vil_e emard,12
+ville em_rd,12
+ville _mard,12
+_ille emard,12
+ville emar_,12
+vi_le emard,12
+vill_ emard,12
+ville e_ard,12
+emard,12
+ema_d,12
+emar_,12
+_mard,12
+em_rd,12
+e_ard,12
+centre ville,13
+centre vil_e,13
+centre vill_,13
+cen_re ville,13
+c_ntre ville,13
+ce_tre ville,13
+centr_ ville,13
+centre vi_le,13
+_entre ville,13
+centre v_lle,13
+centre _ille,13
+centre,13
+ce_tre,13
+cen_re,13
+c_ntre,13
+centr_,13
+cent_e,13
+_entre,13
+saint michel,14
+saint mi_hel,14
+saint mich_l,14
+sai_t michel,14
+saint m_chel,14
+saint miche_,14
+_aint michel,14
+saint _ichel,14
+saint_michel,14
+sa_nt michel,14
+s_int michel,14
+michel,14
+mic_el,14
+_ichel,14
+miche_,14
+m_chel,14
+mich_l,14
+mi_hel,14
+mercier ouest,15
+mercier _uest,15
+mercier oue_t,15
+mercie_ ouest,15
+mer_ier ouest,15
+mercier_ouest,15
+_ercier ouest,15
+merc_er ouest,15
+m_rcier ouest,15
+mercier o_est,15
+mercier ou_st,15
+montreal nord,16
+montreal n_rd,16
+montreal nor_,16
+montreal_nord,16
+montreal _ord,16
+_ontreal nord,16
+montre_l nord,16
+mont_eal nord,16
+montreal no_d,16
+montr_al nord,16
+mo_treal nord,16
+petite patrie,17
+petit_ patrie,17
+petite _atrie,17
+petite patri_,17
+petite pa_rie,17
+peti_e patrie,17
+pet_te patrie,17
+_etite patrie,17
+petite_patrie,17
+pe_ite patrie,17
+petite p_trie,17
+patrie,17
+p_trie,17
+pat_ie,17
+pa_rie,17
+patri_,17
+_atrie,17
+patr_e,17
+saint laurent,18
+_aint laurent,18
+saint laur_nt,18
+saint lauren_,18
+sa_nt laurent,18
+saint laure_t,18
+saint_laurent,18
+sai_t laurent,18
+s_int laurent,18
+saint l_urent,18
+saint _aurent,18
+laurent,18
+l_urent,18
+la_rent,18
+lauren_,18
+laure_t,18
+lau_ent,18
+laur_nt,18
+_aurent,18
+saint leonard,19
+saint leona_d,19
+saint_leonard,19
+sa_nt leonard,19
+s_int leonard,19
+saint leonar_,19
+saint _eonard,19
+saint le_nard,19
+sai_t leonard,19
+sain_ leonard,19
+saint leo_ard,19
+leonard,19
+_eonard,19
+leona_d,19
+l_onard,19
+leo_ard,19
+leonar_,19
+le_nard,19
+leon_rd,19
+ile des soeurs,20
+ile des_soeurs,20
+ile des so_urs,20
+ile_des soeurs,20
+il_ des soeurs,20
+ile des soeur_,20
+ile d_s soeurs,20
+ile des soeu_s,20
+ile de_ soeurs,20
+i_e des soeurs,20
+_le des soeurs,20
+des soeurs,20
+des soeu_s,20
+des s_eurs,20
+des_soeurs,20
+d_s soeurs,20
+des so_urs,20
+des soe_rs,20
+de_ soeurs,20
+des soeur_,20
+des _oeurs,20
+_es soeurs,20
+ile des,20
+i_e des,20
+ile_des,20
+_le des,20
+ile d_s,20
+ile _es,20
+ile de_,20
+il_ des,20
+ile,20
+i_e,20
+il_,20
+_le,20
+soeurs,20
+_oeurs,20
+s_eurs,20
+soeur_,20
+so_urs,20
+soeu_s,20
+soe_rs,20
+ile soeurs,20
+i_e soeurs,20
+ile _oeurs,20
+ile_soeurs,20
+ile soeu_s,20
+ile s_eurs,20
+ile soe_rs,20
+ile so_urs,20
+il_ soeurs,20
+_le soeurs,20
+ile soeur_,20
+vieux montreal,21
+vieu_ montreal,21
+vi_ux montreal,21
+vieux montr_al,21
+vieux_montreal,21
+vieux mo_treal,21
+vieux mont_eal,21
+vieux montre_l,21
+v_eux montreal,21
+vieux mon_real,21
+vieux m_ntreal,21
+vieux,21
+vieu_,21
+vi_ux,21
+vie_x,21
+v_eux,21
+_ieux,21
+parc extension,22
+parc e_tension,22
+_arc extension,22
+parc ext_nsion,22
+p_rc extension,22
+parc extensio_,22
+pa_c extension,22
+parc extens_on,22
+parc exten_ion,22
+parc _xtension,22
+parc exte_sion,22
+extension,22
+extensi_n,22
+exten_ion,22
+exte_sion,22
+extens_on,22
+ex_ension,22
+e_tension,22
+_xtension,22
+extensio_,22
+ext_nsion,22
+parc,22
+p_rc,22
+par_,22
+_arc,22
+pa_c,22
+cote des neiges,23
+cote des nei_es,23
+co_e des neiges,23
+_ote des neiges,23
+cote des n_iges,23
+cote des_neiges,23
+cote_des neiges,23
+cot_ des neiges,23
+cote des _eiges,23
+cote des neige_,23
+cote d_s neiges,23
+des neiges,23
+de_ neiges,23
+des ne_ges,23
+des_neiges,23
+des neig_s,23
+_es neiges,23
+d_s neiges,23
+des neige_,23
+des nei_es,23
+des n_iges,23
+des _eiges,23
+cote des,23
+cote de_,23
+_ote des,23
+c_te des,23
+co_e des,23
+cote_des,23
+cote d_s,23
+cote _es,23
+cot_ des,23
+cote,23
+c_te,23
+cot_,23
+_ote,23
+co_e,23
+neiges,23
+ne_ges,23
+neige_,23
+_eiges,23
+n_iges,23
+neig_s,23
+nei_es,23
+cote neiges,23
+cote n_iges,23
+cote nei_es,23
+cote _eiges,23
+cote_neiges,23
+cote ne_ges,23
+co_e neiges,23
+cote neige_,23
+cote neig_s,23
+_ote neiges,23
+cot_ neiges,23
+petite bourgogne,24
+petite bourgo_ne,24
+petite bourg_gne,24
+petite bour_ogne,24
+pet_te bourgogne,24
+p_tite bourgogne,24
+petite bourgog_e,24
+petite _ourgogne,24
+peti_e bourgogne,24
+_etite bourgogne,24
+pe_ite bourgogne,24
+bourgogne,24
+bourg_gne,24
+b_urgogne,24
+_ourgogne,24
+bour_ogne,24
+bourgo_ne,24
+bo_rgogne,24
+bourgogn_,24
+bou_gogne,24
+bourgog_e,24
+notre dame de grace,25
+notre dame _e grace,25
+notre dame de g_ace,25
+notre_dame de grace,25
+notre dame de_grace,25
+notre _ame de grace,25
+notre dame de _race,25
+notr_ dame de grace,25
+notre dam_ de grace,25
+notre dame de gra_e,25
+not_e dame de grace,25
+notre dame grace,25
+dame de grace,25
+dame de_grace,25
+dam_ de grace,25
+dame_de grace,25
+dame de _race,25
+_ame de grace,25
+dame de grac_,25
+dame de g_ace,25
+dame _e grace,25
+da_e de grace,25
+dame d_ grace,25
+notre dame de,25
+notre dame_de,25
+not_e dame de,25
+notre da_e de,25
+n_tre dame de,25
+_otre dame de,25
+no_re dame de,25
+notre d_me de,25
+notre_dame de,25
+notre dame _e,25
+notre dame d_,25
+notre,25
+n_tre,25
+_otre,25
+not_e,25
+notr_,25
+no_re,25
+grace,25
+gra_e,25
+gr_ce,25
+g_ace,25
+grac_,25
+_race,25
+notre grace,25
+notre grac_,25
+notre gra_e,25
+notre gr_ce,25
+n_tre grace,25
+notr_ grace,25
+notre _race,25
+_otre grace,25
+not_e grace,25
+notre g_ace,25
+no_re grace,25
+pointe aux trembles,26
+pointe aux t_embles,26
+pointe aux trembl_s,26
+pointe_aux trembles,26
+pointe a_x trembles,26
+pointe aux tremble_,26
+pointe au_ trembles,26
+po_nte aux trembles,26
+pointe aux tr_mbles,26
+pointe aux trem_les,26
+pointe aux_trembles,26
+aux trembles,26
+aux_trembles,26
+aux tremb_es,26
+_ux trembles,26
+aux t_embles,26
+a_x trembles,26
+au_ trembles,26
+aux tremble_,26
+aux tre_bles,26
+aux trembl_s,26
+aux tr_mbles,26
+pointe aux,26
+p_inte aux,26
+po_nte aux,26
+poi_te aux,26
+pointe a_x,26
+pointe _ux,26
+poin_e aux,26
+pointe au_,26
+pointe_aux,26
+point_ aux,26
+_ointe aux,26
+trembles,26
+_rembles,26
+trembl_s,26
+trem_les,26
+tremble_,26
+tr_mbles,26
+t_embles,26
+tre_bles,26
+tremb_es,26
+pointe trembles,26
+po_nte trembles,26
+pointe t_embles,26
+pointe_trembles,26
+pointe tre_bles,26
+p_inte trembles,26
+pointe trem_les,26
+_ointe trembles,26
+point_ trembles,26
+pointe tr_mbles,26
+poin_e trembles,26
+riviere des prairies,27
+riviere des prai_ies,27
+riviere des prairi_s,27
+riviere d_s prairies,27
+riviere des prair_es,27
+riviere_des prairies,27
+riviere des_prairies,27
+rivier_ des prairies,27
+riviere des p_airies,27
+riviere des pra_ries,27
+r_viere des prairies,27
+des prairies,27
+_es prairies,27
+des _rairies,27
+des prairie_,27
+de_ prairies,27
+des prai_ies,27
+des prairi_s,27
+des prair_es,27
+des pr_iries,27
+des pra_ries,27
+d_s prairies,27
+riviere des,27
+r_viere des,27
+rivier_ des,27
+riviere d_s,27
+rivi_re des,27
+riviere_des,27
+riviere _es,27
+ri_iere des,27
+riviere de_,27
+_iviere des,27
+riv_ere des,27
+riviere,27
+ri_iere,27
+_iviere,27
+r_viere,27
+rivier_,27
+rivie_e,27
+rivi_re,27
+riv_ere,27
+prairies,27
+p_airies,27
+prairie_,27
+pra_ries,27
+prairi_s,27
+prair_es,27
+prai_ies,27
+pr_iries,27
+_rairies,27
+riviere prairies,27
+rivier_ prairies,27
+riviere prair_es,27
+riviere_prairies,27
+rivie_e prairies,27
+riviere p_airies,27
+_iviere prairies,27
+riv_ere prairies,27
+riviere _rairies,27
+riviere prai_ies,27
+r_viere prairies,27
+pointe saint charles,28
+po_nte saint charles,28
+pointe sain_ charles,28
+poin_e saint charles,28
+pointe saint charl_s,28
+pointe saint ch_rles,28
+pointe _aint charles,28
+pointe_saint charles,28
+_ointe saint charles,28
+point_ saint charles,28
+pointe saint char_es,28
+saint charles,28
+_aint charles,28
+saint c_arles,28
+s_int charles,28
+saint charl_s,28
+saint_charles,28
+saint ch_rles,28
+sain_ charles,28
+saint _harles,28
+saint charle_,28
+saint cha_les,28
+sai_t charles,28
+saint char_es,28
+pointe saint,28
+pointe_saint,28
+_ointe saint,28
+pointe s_int,28
+po_nte saint,28
+pointe sa_nt,28
+p_inte saint,28
+poi_te saint,28
+point_ saint,28
+pointe _aint,28
+pointe sai_t,28
+charles,28
+ch_rles,28
+charle_,28
+char_es,28
+charl_s,28
+_harles,28
+cha_les,28
+c_arles,28
+pointe charles,28
+pointe charl_s,28
+po_nte charles,28
+_ointe charles,28
+pointe _harles,28
+p_inte charles,28
+point_ charles,28
+pointe cha_les,28
+pointe ch_rles,28
+pointe char_es,28
+poin_e charles,28
+bordeaux cartierville,29
+bordeaux _artierville,29
+bordeaux cartiervi_le,29
+bordeaux car_ierville,29
+bordeaux ca_tierville,29
+bordeaux cartier_ille,29
+borde_ux cartierville,29
+bordeaux cartie_ville,29
+bordeaux carti_rville,29
+bordeaux cartierv_lle,29
+bordeau_ cartierville,29
+cartierville,29
+car_ierville,29
+cartiervill_,29
+ca_tierville,29
+cartie_ville,29
+cart_erville,29
+cartier_ille,29
+_artierville,29
+carti_rville,29
+cartiervi_le,29
+cartierv_lle,29
+bordeaux,29
+bord_aux,29
+bo_deaux,29
+bordea_x,29
+bordeau_,29
+borde_ux,29
+_ordeaux,29
+bor_eaux,29
+b_rdeaux,29
+cartiervil_e,29
+c_rtierville,29
+hochelaga maisonneuve,30
+h_chelaga maisonneuve,30
+hoc_elaga maisonneuve,30
+hochelaga maisonn_uve,30
+hochelaga maisonneuv_,30
+hochelag_ maisonneuve,30
+_ochelaga maisonneuve,30
+ho_helaga maisonneuve,30
+hochelaga m_isonneuve,30
+hoch_laga maisonneuve,30
+hochelaga mais_nneuve,30
+maisonneuve,30
+maisonneu_e,30
+maisonne_ve,30
+mais_nneuve,30
+maison_euve,30
+maisonneuv_,30
+_aisonneuve,30
+maisonn_uve,30
+mai_onneuve,30
+m_isonneuve,30
+ma_sonneuve,30
+hochelaga,30
+hoche_aga,30
+hochel_ga,30
+ho_helaga,30
+hochelag_,30
+h_chelaga,30
+hoc_elaga,30
+hoch_laga,30
+_ochelaga,30
+hochela_a,30
+maiso_neuve,30
