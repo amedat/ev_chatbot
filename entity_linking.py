@@ -132,7 +132,7 @@ class CityMetro(Component):
         return predicted_label, predicted_prob
 
     @staticmethod
-    def link(entities, model, embedding, labels, exact_map):
+    def link(entities, model, embedding, labels, exact_map, model_name=""):
         for i, entity in enumerate(entities):
             text = CityMetro.expand_saint_abreviation(entity.get('value'))
             normalize_name = CityMetro.normalize_name(text)
@@ -141,11 +141,11 @@ class CityMetro(Component):
             linked_name = exact_map.get(normalize_name)
             if linked_name:
                 probability = 1.0
-                logger.info(f"*** entity linked found in dictionary <{linked_name}> ({probability:.4f}) ***")
+                logger.info(f"*** {model_name} entity linked found in dictionary <{linked_name}> ({probability:.4f}) ***")
             else:
                 # ask the entity linking NN Model to predict the entity name
                 linked_name, probability = CityMetro.link_entity_model_inference(normalize_name, model, embedding, labels)
-                logger.info(f"*** entity linked from <{normalize_name}> to <{linked_name}> ({probability:.4f}) ***")
+                logger.info(f"*** {model_name} entity linked from <{normalize_name}> to <{linked_name}> ({probability:.4f}) ***")
 
             entities[i]['value'] = linked_name
             entities[i]['entity linking confidence'] = probability
@@ -164,9 +164,9 @@ class CityMetro(Component):
         quartier_entities = [e for e in message.data.get('entities') if e['entity'] == 'quartier']
 
         entities = []
-        entities += self.link(city_entities, self.cities_model, self.cities_embedding, self.cities_labels, self.exact_map_cities)
-        entities += self.link(metro_entities, self.metro_model, self.metro_embedding, self.metro_labels, self.exact_map_metro)
-        entities += self.link(quartier_entities, self.quartier_model, self.quartier_embedding, self.quartier_labels, self.exact_map_quartier)
+        entities += self.link(city_entities, self.cities_model, self.cities_embedding, self.cities_labels, self.exact_map_cities, "cities")
+        entities += self.link(metro_entities, self.metro_model, self.metro_embedding, self.metro_labels, self.exact_map_metro, "metro")
+        entities += self.link(quartier_entities, self.quartier_model, self.quartier_embedding, self.quartier_labels, self.exact_map_quartier, "quartiers")
 
         if entities:
             message.set("entities", entities, add_to_output=True)
