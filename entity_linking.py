@@ -1,5 +1,6 @@
 import hashlib
 import logging
+import math
 import pickle
 import os
 import subprocess
@@ -118,10 +119,17 @@ class CityMetro(Component):
     def link_entity_model_inference(text, model, embedding, labels, max_length=50):
         prediction = predict.predict(model, embedding, text, max_length)
 
-        max = prediction.argmax(1)[0]
-        predicted_label = labels[max]
+        # max = prediction.argmax(1)[0]
+        # predicted_label = labels[max]
 
-        return predicted_label
+        # top-k
+        values, indices = prediction.topk(5)
+        predicted_label = labels[indices[0][0]]
+        predicted_prob = math.exp(values[0][0].item())
+        # for rank, indice in enumerate(indices[0]):
+        #     print(f'top {rank+1} ({math.exp(values[0][rank].item()):.10f}): {labels[indice]}')
+
+        return predicted_label, predicted_prob
 
     @staticmethod
     def link(entities, model, embedding, labels, exact_map):
@@ -129,14 +137,18 @@ class CityMetro(Component):
             text = CityMetro.expand_saint_abreviation(entity.get('value'))
             normalize_name = CityMetro.normalize_name(text)
 
-            # check for a direct match in dictionnary before running the NN Model
+            # check for a direct match in dictionary before running the NN Model
             linked_name = exact_map.get(normalize_name)
-            if not linked_name:
+            if linked_name:
+                probability = 1.0
+                logger.info(f"*** entity linked found in dictionary <{linked_name}> ({probability:.4f}) ***")
+            else:
                 # ask the entity linking NN Model to predict the entity name
-                linked_name = CityMetro.link_entity_model_inference(normalize_name, model, embedding, labels)
-                logger.info(f"*** entity linked from <{normalize_name}> to <{linked_name}> ***")
+                linked_name, probability = CityMetro.link_entity_model_inference(normalize_name, model, embedding, labels)
+                logger.info(f"*** entity linked from <{normalize_name}> to <{linked_name}> ({probability:.4f}) ***")
 
             entities[i]['value'] = linked_name
+            entities[i]['entity linking confidence'] = probability
             entities[i]['entity linking'] = "entity_linking.CityMetro"
 
         return entities

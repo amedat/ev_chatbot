@@ -1,4 +1,5 @@
 import argparse
+import math
 import pickle
 import torch
 
@@ -82,4 +83,7 @@ if __name__ == "__main__":
         # top-k
         values, indices = prediction.topk(5)
         for rank, indice in enumerate(indices[0]):
-            print(f'top {rank+1}: {labels[indice]}')
+            print(f'top {rank+1} ({math.exp(values[0][rank].item()):.10f}): {labels[indice]}')
+
+        print(f"name (from topk): {labels[indices[0][0]]}")
+        print(f"prob (from topk): {math.exp(values[0][0].item())}")
