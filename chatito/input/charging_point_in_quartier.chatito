@@ -1,16 +1,13 @@
 import ./common.chatito
 import ./slots.chatito
 
-%[ask_charging_point_in_city]('training': '1000', 'testing': '200')
-    ~[bornes] ~[à] @[city]
-    ~[bonjour?] ~[où sont les] ~[bornes] ~[à] @[city]
-    ~[dans la ville de] @[city] ~[où sont les] ~[bornes]
-    ~[à] @[city] ~[combien de?] ~[bornes]
-    ~[combien de?] ~[bornes] ~[à] @[city] ~[merci?]
-    ~[dans la ville de] @[city] ~[combien de?] ~[bornes] ~[svp?]
-    ~[svp?] ~[combien de?] ~[bornes] ~[à] @[city]
-    ~[comment recharger] ~[à] @[city]
-    ~[bonjour?] ~[comment recharger] ~[dans la ville de] @[city]
+%[ask_charging_point_in_quartier]('training': '1000', 'testing': '200')
+    ~[bornes] ~[dans le quartier] @[quartier]
+    ~[bonjour?] ~[où sont les] ~[bornes] ~[dans le quartier] @[quartier]
+    ~[dans le quartier] @[quartier] ~[combien de?] ~[bornes]
+    ~[combien de?] ~[bornes] ~[dans le quartier] @[quartier] ~[merci?]
+    ~[svp?] ~[combien de?] ~[bornes] ~[dans le quartier] @[quartier]
+    ~[comment recharger] ~[dans le quartier] @[quartier]
 
 
 ~[combien de]
@@ -23,20 +20,19 @@ import ./slots.chatito
     il y a combien de
     y a combien de
 
-~[à]
-    à
-    dans le coin de
-    dans le bout de
-    près de
-    proche de
-    autour de
-    à proximité de
-
-~[dans la ville de]
-    dans la ville de
-    dans la région de
-    près du village de
-    proche du village de
+~[dans le quartier]
+    quartier
+    au quartier
+    dans quartier
+    dans le quartier
+    proche du quartier
+    autour du quartier
+    pas loin du quartier
+    dans le coin du quartier
+    dans le bout du quartier
+    dans les alentour du quartier
+    à proximité du quartier
+    accessible du quartier
 
 ~[où sont les]
     où

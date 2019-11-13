@@ -7,13 +7,17 @@ intents:
 - mood_unhappy
 - ask_charging_point_in_city
 - ask_charging_point_near_metro
+- ask_charging_point_in_quartier
 entities:
 - city
 - metro
+- quartier
 slots:
   city:
     type: text
   metro:
+    type: text
+  quartier:
     type: text
 templates:
   utter_greet:
@@ -35,3 +39,4 @@ actions:
 - utter_goodbye
 - action_charging_point_in_city
 - action_charging_point_near_metro
+- action_charging_point_in_quartier

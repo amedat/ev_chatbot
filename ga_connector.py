@@ -38,7 +38,7 @@ class GoogleConnector(InputChannel):
             text = payload['inputs'][0]['rawInputs'][0]['query']
 
             if intent == 'actions.intent.MAIN':
-                message = "Ici Mme Laprise, vas-y je t'écoute."
+                message = "Vas-y, Madame Laprise t'écoute!"
             else:
                 out = CollectingOutputChannel()
                 await on_new_message(UserMessage(text, out))

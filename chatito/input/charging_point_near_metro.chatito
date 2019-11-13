@@ -25,6 +25,7 @@ import ./slots.chatito
     proche du métro
     autour du métro
     à côté du métro
+    pas loin du métro
     au métro
     dans le coin du métro
     dans le bout du métro
@@ -37,6 +38,7 @@ import ./slots.chatito
     proche de la station
     autour de la station
     à côté de la station
+    pas loin de la station
     à la station
     dans le coin de la station
     dans le bout de la station
@@ -49,6 +51,7 @@ import ./slots.chatito
     proche de la station de métro
     autour de la station de métro
     à côté de la station de métro
+    pas loin de la station de métro
     à la station de métro
     dans le coin de la station de métro
     dans le bout de la station de métro

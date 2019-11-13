@@ -6,6 +6,13 @@ import pandas as pd
 
 slots = [
     {
+        "name": 'quartier',
+        "max" : None,
+        "function_list": [
+            "dash_space",
+        ],
+    },
+    {
         "name": 'metro',
         "max": None,
         "function_list": [
