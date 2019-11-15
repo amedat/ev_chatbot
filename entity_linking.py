@@ -132,43 +132,128 @@ class CityMetro(Component):
         return predicted_label, predicted_prob
 
     @staticmethod
-    def link(entities, model, embedding, labels, exact_map, model_name=""):
+    def predict_entity_linking(entities, model, embedding, labels, exact_map, entity_predicted):
+        """
+        Make a prediction for each given entities using the given model and store the result
+        in the entity dict under the key "entity_linking".
+
+        Example for metro model with CRFEntityExtractor that extracted a city entity.
+        entities:         [{'start': 9, 'end': 17, 'value': 'longueuil', 'entity': 'city', 'confidence': 0.976792, 'extractor': 'CRFEntityExtractor'}]
+
+        Returns entities: [{'start': 9, 'end': 17, 'value': 'longueuil', 'entity': 'city', 'confidence': 0.976792, 'extractor': 'CRFEntityExtractor',
+                            'entity_linking': {
+                                'metro': {'value': 'Longueuil-Université-de-Sherbrooke', 'confidence': 0.9953, 'module': 'entity_linking.CityMetro'}
+                            }
+                          }]
+        """
         for i, entity in enumerate(entities):
             text = CityMetro.expand_saint_abreviation(entity.get('value'))
-            normalize_name = CityMetro.normalize_name(text)
+            normalized_name = CityMetro.normalize_name(text)
 
             # check for a direct match in dictionary before running the NN Model
-            linked_name = exact_map.get(normalize_name)
+            linked_name = exact_map.get(normalized_name)
             if linked_name:
                 probability = 1.0
-                logger.info(f"*** {model_name} entity linked found in dictionary <{linked_name}> ({probability:.4f}) ***")
+                logger.info(f"*** {entity_predicted} entity linked found in dictionary <{linked_name}> ({probability:.4f}) ***")
             else:
                 # ask the entity linking NN Model to predict the entity name
-                linked_name, probability = CityMetro.link_entity_model_inference(normalize_name, model, embedding, labels)
-                logger.info(f"*** {model_name} entity linked from <{normalize_name}> to <{linked_name}> ({probability:.4f}) ***")
+                linked_name, probability = CityMetro.link_entity_model_inference(normalized_name, model, embedding, labels)
+                logger.info(f"*** {entity_predicted} entity linked from <{normalized_name}> to <{linked_name}> ({probability:.4f}) ***")
 
-            entities[i]['value'] = linked_name
-            entities[i]['entity linking confidence'] = probability
-            entities[i]['entity linking'] = "entity_linking.CityMetro"
+            if not entities[i].get('entity_linking'):
+                entities[i]['entity_linking'] = {}
+            if not entities[i]['entity_linking'].get(entity_predicted):
+                entities[i]['entity_linking'][entity_predicted] = {}
+
+            entities[i]['entity_linking'][entity_predicted]['value'] = linked_name
+            entities[i]['entity_linking'][entity_predicted]['confidence'] = probability
+            entities[i]['entity_linking'][entity_predicted]['input'] = normalized_name
+            entities[i]['entity_linking'][entity_predicted]['module'] = "entity_linking.CityMetro"
 
         return entities
 
     def process(self, message, **kwargs):
-        """ Look for city and metro entity and pass it to the entity linking model.  """
+        """ Look for city, metro and quartier entity and pass it to the entity linking model.  """
 
         # check for a city or metro entity detected by the Entity Extractor
-        #   entities => [{'start': 9, 'end': 17, 'value': 'roberval', 'entity': 'city',
-        #                 'confidence': 0.976792, 'extractor': 'CRFEntityExtractor'}]
-        city_entities = [e for e in message.data.get('entities') if e['entity'] == 'city']
-        metro_entities = [e for e in message.data.get('entities') if e['entity'] == 'metro']
-        quartier_entities = [e for e in message.data.get('entities') if e['entity'] == 'quartier']
-
-        entities = []
-        entities += self.link(city_entities, self.cities_model, self.cities_embedding, self.cities_labels, self.exact_map_cities, "cities")
-        entities += self.link(metro_entities, self.metro_model, self.metro_embedding, self.metro_labels, self.exact_map_metro, "metro")
-        entities += self.link(quartier_entities, self.quartier_model, self.quartier_embedding, self.quartier_labels, self.exact_map_quartier, "quartiers")
+        #   entities => [{'start': 16, 'end': 25, 'value': 'longueuil', 'entity': 'metro', 'confidence': 0.99112538,
+        #                 'extractor': 'CRFEntityExtractor'}]
+        entities = [e for e in message.data.get('entities') if e['entity'] in ['city', 'metro', 'quartier']]
 
         if entities:
+            self.predict_entity_linking(entities, self.cities_model, self.cities_embedding, self.cities_labels, self.exact_map_cities, "city")
+            self.predict_entity_linking(entities, self.metro_model, self.metro_embedding, self.metro_labels, self.exact_map_metro, "metro")
+            self.predict_entity_linking(entities, self.quartier_model, self.quartier_embedding, self.quartier_labels, self.exact_map_quartier, "quartier")
+
+            # logger.info(f"*** {entities} ***")
+            # entities example:
+            # [
+            #   {
+            #     'start': 16,
+            #     'end': 25,
+            #     'value': 'longueuil',
+            #     'entity': 'metro',
+            #     'confidence': 0.9911253808966003,
+            #     'extractor': 'CRFEntityExtractor',
+            #
+            #     'entity_linking': {
+            #       'city': {
+            #         'value': 'Longueuil',
+            #         'confidence': 1.0,
+            #         'input': 'longueuil',
+            #         'module': 'entity_linking.CityMetro'
+            #       },
+            #       'metro': {
+            #         'value': 'Longueuil-Université-de-Sherbrooke',
+            #         'confidence': 0.999599060347744,
+            #         'input': 'longueuil',
+            #         'module': 'entity_linking.CityMetro'
+            #       },
+            #       'quartier': {
+            #         'value': 'Vieux-Montréal',
+            #         'confidence': 0.3658391254377098,
+            #         'input': 'longueuil',
+            #         'module': 'entity_linking.CityMetro'
+            #       }
+            #     }
+            #   }
+            # ]
+
+            for entity in entities:
+                # default is entity selected by CRFEntityExtractor
+                selected_entity = entity['entity']
+
+                # print(message.text)
+
+                # DISAMBIGUATION
+                if entity['entity'] == 'city':
+                    if entity['entity_linking']['metro']['confidence'] > 0.80:
+                        if any(keyword in message.text[:entity['start']] for keyword in ['métro', 'metro', 'station']):
+                            # some keywords confirm that we are talking of a metro station.
+                            # ex: <Longueuil> the city or the metro station: "bornes à la station Longueuil"
+                            selected_entity = 'metro'
+
+                    if entity['entity_linking']['quartier']['confidence'] > 0.80:
+                        if any(keyword in message.text[:entity['start']] for keyword in ['quartier', 'arrondissement']):
+                            # some keywords confirm that we are talking of a quartier of Montreal.
+                            # ex: <Rosemont> guess as <Rougemont> city but is a quartier: "bornes dans le quartier Rosemont"
+                            selected_entity = 'quartier'
+                        elif (entity['entity_linking']['quartier']['confidence'] > 0.95 and
+                              entity['entity_linking']['quartier']['confidence'] > entity['entity_linking']['city']['confidence']):
+                            # no keyword found but the confidence is very strong about a quartier instead of a city.
+                            # ex: <Rosemont> guess as <Rougemont> city but is a quartier: "bornes dans Rosemont"
+                            selected_entity = 'quartier'
+
+                # apply the entity found by entity linking model
+                if entity['entity'] != selected_entity:
+                    logger.info(f"*** CRFEntityExtractor decision changed ***")
+                    entity['old_entity'] = entity['entity']
+                    entity['old_confidence'] = entity['confidence']
+
+                entity['value'] = entity['entity_linking'][selected_entity]['value']
+                entity['confidence'] = entity['entity_linking'][selected_entity]['confidence']
+                entity['entity'] = selected_entity
+
             message.set("entities", entities, add_to_output=True)
 
     def persist(self, file_name, model_dir):
