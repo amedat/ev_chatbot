@@ -1,0 +1,3 @@
+# replace key by value in message text. Underscore take place of single space char.
+_metro_: _métro_
+_pres_: _près_

@@ -1,7 +1,7 @@
 import ./common.chatito
 import ./slots.chatito
 
-%[ask_charging_point_near_metro]('training': '1000', 'testing': '200')
+%[ask_charging_point_metro]('training': '1000', 'testing': '200')
     ~[bornes] ~[près du métro] @[metro]
     ~[bonjour?] ~[où sont les] ~[bornes] ~[près du métro] @[metro]
     ~[près du métro] @[metro] ~[combien de?] ~[bornes]

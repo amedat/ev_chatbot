@@ -5,10 +5,10 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 
 
-class ActionChargingPointInCity(Action):
+class ActionChargingPointCity(Action):
 
     def name(self):
-        return "action_charging_point_in_city"
+        return "action_charging_point_city"
 
     @staticmethod
     def count_charging_point_in_city(graph, city_name):
@@ -32,10 +32,10 @@ class ActionChargingPointInCity(Action):
         return []
 
 
-class ActionChargingPointNearMetro(Action):
+class ActionChargingPointMetro(Action):
 
     def name(self):
-        return "action_charging_point_near_metro"
+        return "action_charging_point_metro"
 
     @staticmethod
     def count_charging_point_near_metro(graph, metro_name):
@@ -61,10 +61,10 @@ class ActionChargingPointNearMetro(Action):
         return []
 
 
-class ActionChargingPointInQuartier(Action):
+class ActionChargingPointQuartier(Action):
 
     def name(self):
-        return "action_charging_point_in_quartier"
+        return "action_charging_point_quartier"
 
     @staticmethod
     def count_charging_point_in_quartier(graph, quartier_name):

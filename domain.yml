@@ -5,9 +5,9 @@ intents:
 - deny
 - mood_great
 - mood_unhappy
-- ask_charging_point_in_city
-- ask_charging_point_near_metro
-- ask_charging_point_in_quartier
+- ask_charging_point_city
+- ask_charging_point_metro
+- ask_charging_point_quartier
 entities:
 - city
 - metro
@@ -37,6 +37,6 @@ actions:
 - utter_did_that_help
 - utter_happy
 - utter_goodbye
-- action_charging_point_in_city
-- action_charging_point_near_metro
-- action_charging_point_in_quartier
+- action_charging_point_city
+- action_charging_point_metro
+- action_charging_point_quartier
