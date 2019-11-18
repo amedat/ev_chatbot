@@ -7,6 +7,7 @@ language: fr
 #   pipeline: "pretrained_embeddings_spacy"
 
 pipeline:
+- name: "normalization.Keywords"
 - name: "SpacyNLP"
 - name: "SpacyTokenizer"
 - name: "SpacyFeaturizer"
