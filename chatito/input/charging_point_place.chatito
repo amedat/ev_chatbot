@@ -1,0 +1,135 @@
+import ./common.chatito
+import ./slots.chatito
+
+%[ask_charging_point_place]('training': '3000', 'testing': '500')
+    ~[bornes] ~[à] @[city]
+    ~[bonjour?] ~[où sont les] ~[bornes] ~[à] @[city]
+    ~[dans la ville de] @[city] ~[où sont les] ~[bornes]
+    ~[à] @[city] ~[combien de?] ~[bornes]
+    ~[combien de?] ~[bornes] ~[à] @[city] ~[merci?]
+    ~[dans la ville de] @[city] ~[combien de?] ~[bornes] ~[svp?]
+    ~[svp?] ~[combien de?] ~[bornes] ~[à] @[city]
+    ~[comment recharger] ~[à] @[city]
+    ~[bonjour?] ~[comment recharger] ~[dans la ville de] @[city]
+
+    ~[bornes] ~[près du métro] @[metro]
+    ~[bonjour?] ~[où sont les] ~[bornes] ~[près du métro] @[metro]
+    ~[près du métro] @[metro] ~[combien de?] ~[bornes]
+    ~[combien de?] ~[bornes] ~[près du métro] @[metro] ~[merci?]
+    ~[svp?] ~[combien de?] ~[bornes] ~[près du métro] @[metro]
+    ~[comment recharger] ~[près du métro] @[metro]
+
+    ~[bornes] ~[dans le quartier] @[quartier]
+    ~[bonjour?] ~[où sont les] ~[bornes] ~[dans le quartier] @[quartier]
+    ~[dans le quartier] @[quartier] ~[combien de?] ~[bornes]
+    ~[combien de?] ~[bornes] ~[dans le quartier] @[quartier] ~[merci?]
+    ~[svp?] ~[combien de?] ~[bornes] ~[dans le quartier] @[quartier]
+    ~[comment recharger] ~[dans le quartier] @[quartier]
+
+
+~[combien de]
+    combien de
+    combien y-a-t-il de
+    combien y a de
+    y-a-t-il des
+    est-ce qu'il y des
+    y as-tu des
+    il y a combien de
+    y a combien de
+
+~[à]
+    à
+    dans le coin de
+    dans le bout de
+    près de
+    proche de
+    autour de
+    à proximité de
+
+~[dans la ville de]
+    dans la ville de
+    dans la région de
+    près du village de
+    proche du village de
+
+~[où sont les]
+    où
+    où est-ce qu'on trouve des
+    où sont les
+    où ce qu'y sont les
+    y sont où les
+    où se recharger
+    où on se charge
+    où est-ce qu'on peut se recharger
+
+~[comment recharger]
+    comment recharger
+    comment recharger ma voiture
+    comment recharger mon véhicule
+    comment trouver une borne
+    comment on charge
+    comment on fait pour charger
+    comment on trouve une borne
+    comment se brancher
+    recharger
+    se recharger
+    où se brancher
+    se brancher
+    à quel endroit se brancher
+    est-ce que je peux me brancher
+    est-ce qu'on peux se brancher
+    peut-on se brancher
+    on se branche où
+
+~[dans le quartier]
+    à
+    dans
+    quartier
+    au quartier
+    dans quartier
+    dans le quartier
+    secteur
+    dans le secteur
+    arrondissement
+    dans l'arrondissement
+
+~[près du métro]
+    près du métro
+    proche du métro
+    autour du métro
+    à côté du métro
+    pas loin du métro
+    au métro
+    dans le coin du métro
+    dans le bout du métro
+    dans les alentour du métro
+    collé sur le métro
+    à proximité du métro
+    accessible du métro
+    voisin du métro
+    près de la station
+    proche de la station
+    autour de la station
+    à côté de la station
+    pas loin de la station
+    à la station
+    dans le coin de la station
+    dans le bout de la station
+    dans les alentour de la station
+    collé sur la station
+    à proximité de la station
+    accessible de la station
+    voisin de la station
+    près de la station de métro
+    proche de la station de métro
+    autour de la station de métro
+    à côté de la station de métro
+    pas loin de la station de métro
+    à la station de métro
+    dans le coin de la station de métro
+    dans le bout de la station de métro
+    dans les alentour de la station de métro
+    collé sur la station de métro
+    à proximité de la station de métro
+    accessible de la station de métro
+    voisin de la station de métro

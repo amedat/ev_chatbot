@@ -5,66 +5,22 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 
 
-class ActionChargingPointCity(Action):
+class ActionChargingPoinPlace(Action):
 
     def name(self):
-        return "action_charging_point_city"
+        return "action_charging_point_place"
 
     @staticmethod
     def count_charging_point_in_city(graph, city_name):
         return graph.run("MATCH (City {name:{cityName}})<-[:IN*]-(p:ChargingPoint) RETURN count(p)",
                          cityName=city_name).evaluate()
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        city_name = tracker.get_slot('city')
-
-        if city_name:
-            graph = Graph(password='abcd')
-            count = self.count_charging_point_in_city(graph, city_name)
-
-            dispatcher.utter_message(f"Il y a {count} bornes de recharge à {city_name}.")
-        else:
-            dispatcher.utter_message(f"Pour quel ville voulez-vous connaitre les bornes de recharge?")
-
-        return []
-
-
-class ActionChargingPointMetro(Action):
-
-    def name(self):
-        return "action_charging_point_metro"
-
     @staticmethod
     def count_charging_point_near_metro(graph, metro_name):
         # Charging parks at less than 500m of Pie-IX metro station
-        return graph.run("MATCH (MetroStation {name:{metroName}})-[n:NEARBY]-(p:ChargingPark) WHERE n.distance_km < 0.5 RETURN count(p)",
-                         metroName=metro_name).evaluate()
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        metro_name = tracker.get_slot('metro')
-
-        if metro_name:
-            graph = Graph(password='abcd')
-            count = self.count_charging_point_near_metro(graph, metro_name)
-
-            dispatcher.utter_message(f"Il y a {count} endroits à moins de 500m du métro {metro_name}.")
-            # dispatcher.utter_message(f"Les bornes pres du metro <{metro_name}> sont:")
-        else:
-            dispatcher.utter_message(f"Pour quel métro voulez-vous connaitre les bornes de recharge?")
-
-        return []
-
-
-class ActionChargingPointQuartier(Action):
-
-    def name(self):
-        return "action_charging_point_quartier"
+        return graph.run(
+            "MATCH (MetroStation {name:{metroName}})-[n:NEARBY]-(p:ChargingPark) WHERE n.distance_km < 0.5 RETURN count(p)",
+            metroName=metro_name).evaluate()
 
     @staticmethod
     def count_charging_point_in_quartier(graph, quartier_name):
@@ -75,14 +31,24 @@ class ActionChargingPointQuartier(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        quartier_name = tracker.get_slot('quartier')
+        msg_entities = tracker.latest_message.get('entities')
+        if msg_entities and len(msg_entities) > 0:
+            msg_entity_type = msg_entities[0].get('entity')
+            msg_entity_value = msg_entities[0].get('value')
 
-        if quartier_name:
-            graph = Graph(password='abcd')
-            count = self.count_charging_point_in_quartier(graph, quartier_name)
+            if msg_entity_type:
+                graph = Graph(password='abcd')
 
-            dispatcher.utter_message(f"Il y a {count} bornes dans le quartier {quartier_name}.")
+                if msg_entity_type == 'city':
+                    count = self.count_charging_point_in_city(graph, msg_entity_value)
+                    dispatcher.utter_message(f"Il y a {count} bornes de recharge à {msg_entity_value}.")
+                elif msg_entity_type == 'metro':
+                    count = self.count_charging_point_near_metro(graph, msg_entity_value)
+                    dispatcher.utter_message(f"Il y a {count} endroits à moins de 500m du métro {msg_entity_value}.")
+                elif msg_entity_type == 'quartier':
+                    count = self.count_charging_point_in_quartier(graph, msg_entity_value)
+                    dispatcher.utter_message(f"Il y a {count} bornes dans le quartier {msg_entity_value}.")
         else:
-            dispatcher.utter_message(f"Pour quel quartier de Montréal voulez-vous connaitre les bornes de recharge?")
+            dispatcher.utter_message(f"Pour quel endroit voulez-vous connaitre les bornes de recharge?")
 
         return []
