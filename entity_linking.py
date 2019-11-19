@@ -228,9 +228,14 @@ class CityMetro(Component):
                 # DISAMBIGUATION
                 if entity['entity'] == 'city':
                     if entity['entity_linking']['metro']['confidence'] > 0.80:
-                        if any(keyword in message.text[:entity['start']] for keyword in ['métro', 'station']):
+                        if any(keyword in message.text[:entity['start']] for keyword in ['métro']):
                             # some keywords confirm that we are talking of a metro station.
-                            # ex: <Longueuil> the city or the metro station: "bornes à la station Longueuil"
+                            # ex: <Longueuil> the city or the metro station: "bornes au métro Longueuil"
+                            selected_entity = 'metro'
+                        elif 'station' in message.text[max(0,entity['start']-15):entity['start']]:
+                            # the word station appears in the 15 chars before the entity name
+                            # ex: <Longueuil> the city or the metro station: "bornes à la station Longueuil",
+                            #                 but not "où sont les station de recharge à proximité de Longueuil"
                             selected_entity = 'metro'
 
                     if entity['entity_linking']['quartier']['confidence'] > 0.80:

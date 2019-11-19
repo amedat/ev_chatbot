@@ -1,7 +1,7 @@
 ## ----- CORRECT ENTITIES SPELLING -----
 
 ## city
-* ask_charging_point_place: combien de bornes de recharge à [Saguenay](city)
+* ask_charging_point_place: combien de bornes de recharge à [Saguenay](city)?
   - action_charging_point_place
 
 ## metro
@@ -9,7 +9,7 @@
   - action_charging_point_place
 
 ## quartier
-* ask_charging_point_place: bornes dans le quartier [Rosemont](quartier)
+* ask_charging_point_place: bornes dans le quartier [Rosemont](quartier)?
   - action_charging_point_place
 
 ## ----- SMALL ENTITIES MISPELLING -----
@@ -19,7 +19,7 @@
   - action_charging_point_place
 
 ## metro
-* ask_charging_point_place: Est-ce qu'il y a des bornes proche du métro [st henry](metro:Place-Saint-Henri)
+* ask_charging_point_place: Est-ce qu'il y a des bornes proche du métro [st henry](metro:Place-Saint-Henri) ?
   - action_charging_point_place
 
 ## quartier
@@ -31,3 +31,14 @@
 ## metro
 * ask_charging_point_place: Est-ce qu'il y a des bornes pres du metro [st henry](metro:Place-Saint-Henri)
   - action_charging_point_place
+
+## ----- STATION DISAMBIGUATION -----
+
+## metro
+* ask_charging_point_place: dans le bout de la station [du castelno](metro:De Castelnau) combien de endroit pour recharger 
+  - action_charging_point_place
+
+## metro
+* ask_charging_point_place: où ce qu'y sont les station de recharge à proximité de [Saint Robert Bellarmin](city:Saint-Robert-Bellarmin) 
+  - action_charging_point_place
+

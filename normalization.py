@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 class Keywords(Component):
     """
     Search and replace some words as defined in the "normalization.yml" file.
+    Also remove ending "?" character.
 
     The yaml file structure is one keyword per line, '_' to mark space.
     ex:
@@ -44,6 +45,11 @@ class Keywords(Component):
     def process(self, message, **kwargs):
         """ Search for some important keywords and normalize them. """
         original_text = message.text
+
+        # remove "?" character at the end of a message because it could be
+        # wrongly included in extracted entity name
+        if message.text.rstrip()[-1] == '?':
+            message.text = message.text.replace('?', '').rstrip()
 
         # look and replace keywords
         for item in self.keywords_list:
