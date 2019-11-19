@@ -17,6 +17,8 @@ slots:
     type: text
   quartier:
     type: text
+  found_charging_point:
+    type: text
 templates:
   utter_greet:
   - text: Allo! Comment ça va?

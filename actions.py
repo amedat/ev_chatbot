@@ -2,6 +2,7 @@ from py2neo import Graph
 from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker
+from rasa_sdk.events import SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 
@@ -31,6 +32,8 @@ class ActionChargingPoinPlace(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
+        count = 0
+
         msg_entities = tracker.latest_message.get('entities')
         if msg_entities and len(msg_entities) > 0:
             msg_entity_type = msg_entities[0].get('entity')
@@ -51,4 +54,4 @@ class ActionChargingPoinPlace(Action):
         else:
             dispatcher.utter_message(f"Pour quel endroit voulez-vous connaitre les bornes de recharge?")
 
-        return []
+        return [SlotSet("found_charging_point", count)] if count > 0 else []
