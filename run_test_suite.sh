@@ -15,4 +15,4 @@ if [ "$?" == "127" ]; then
 	echo $CONDA_DEFAULT_ENV
 	exit 1
 fi
-rasa test core --stories ./tests/e2e_stories.md --e2e
+rasa test core --stories ./tests/e2e_stories.md --e2e --out ./tests/results/end-to-end
