@@ -3,7 +3,7 @@
 ## city
 * ask_charging_point_place: combien de bornes de recharge à [Saguenay](city)?
   - action_charging_point_place
-  - slot{"found_charging_point": 5
+  - slot{"found_charging_point": 5}
 
 ## metro
 * ask_charging_point_place: bornes près du métro [Laurier](metro)
@@ -48,6 +48,23 @@
 
 ## metro
 * ask_charging_point_place: où ce qu'y sont les station de recharge à proximité de [Saint Robert Bellarmin](city:Saint-Robert-Bellarmin) 
+  - action_charging_point_place
+  - slot{"found_charging_point": 5}
+
+## metro
+* ask_charging_point_place: bornes à la station [rosemont](metro:Rosemont)? 
+  - action_charging_point_place
+  - slot{"found_charging_point": 5}
+  
+## ----- QUARTIER DISAMBIGUATION -----
+
+## quartier
+* ask_charging_point_place: bornes à [rosemont](quartier:Rosemont) 
+  - action_charging_point_place
+  - slot{"found_charging_point": 5}
+
+## quartier
+* ask_charging_point_place: bornes dans [rosemont](quartier:Rosemont) 
   - action_charging_point_place
   - slot{"found_charging_point": 5}
 
