@@ -1,79 +1,87 @@
+import ./slots.chatito
 
-%[inform_rectify_quartier_not_metro]('training': '100', 'testing': '25')
-    ~[le quartier] ~[Rosemont?], ~[pas le métro]
-    ~[le quartier], ~[pas le métro] ~[Rosemont?]
+%[inform_rectify_quartier_not_metro]('training': '200', 'testing': '50')
+    ~[le quartier] @[quartier?], ~[pas le métro]
+    ~[le quartier], ~[pas le métro] @[quartier?]
 
-    ~[pas le métro] ~[Rosemont?], ~[le quartier]
-    ~[pas le métro], ~[le quartier] ~[Rosemont?]
+    ~[pas le métro] @[quartier?], ~[le quartier]
+    ~[pas le métro], ~[le quartier] @[quartier?]
 
-    ~[pas la station] ~[Rosemont?], ~[le quartier]
-    ~[pas la station], ~[le quartier] ~[Rosemont?]
-
-
-%[inform_rectify_metro_not_quartier]('training': '100', 'testing': '25')
-    ~[le métro] ~[Rosemont?], ~[pas le quartier]
-    ~[le métro], ~[pas le quartier] ~[Rosemont?]
-
-    ~[pas le quartier] ~[Rosemont?], ~[le métro]
-    ~[pas le quartier], ~[le métro] ~[Rosemont?]
-
-    ~[pas le quartier] ~[Rosemont?], ~[la station]
-    ~[pas le quartier], ~[la station] ~[Rosemont?]
+    ~[pas la station] @[quartier?], ~[le quartier]
+    ~[pas la station], ~[le quartier] @[quartier?]
 
 
-%[inform_rectify_city_not_metro]('training': '100', 'testing': '25')
-    ~[la ville] ~[Sherbrooke?], ~[pas le métro]
-    ~[la ville], ~[pas le métro] ~[Sherbrooke?]
+%[inform_rectify_metro_not_quartier]('training': '200', 'testing': '50')
+    ~[le métro] @[quartier?], ~[pas le quartier]
+    ~[le métro], ~[pas le quartier] @[quartier?]
 
-    ~[pas le métro] ~[Sherbrooke?], ~[la ville]
-    ~[pas le métro], ~[la ville] ~[Sherbrooke?]
+    ~[pas le quartier] @[quartier?], ~[le métro]
+    ~[pas le quartier], ~[le métro] @[quartier?]
 
-    ~[pas la station] ~[Sherbrooke?], ~[la ville]
-    ~[pas la station], ~[la ville] ~[Sherbrooke?]
+    ~[pas le quartier] @[quartier?], ~[la station]
+    ~[pas le quartier], ~[la station] @[quartier?]
 
 
-%[inform_rectify_metro_not_city]('training': '100', 'testing': '25')
-    ~[le métro] ~[Sherbrooke?], ~[pas la ville]
-    ~[le métro], ~[pas la ville] ~[Sherbrooke?]
+%[inform_rectify_city_not_metro]('training': '200', 'testing': '50')
+    ~[la ville] @[city?], ~[pas le métro]
+    ~[la ville], ~[pas le métro] @[city?]
 
-    ~[pas la ville] ~[Sherbrooke?], ~[le métro]
-    ~[pas la ville], ~[le métro] ~[Sherbrooke?]
+    ~[pas le métro] @[city?], ~[la ville]
+    ~[pas le métro], ~[la ville] @[city?]
 
-    ~[pas la ville] ~[Sherbrooke?], ~[la station]
-    ~[pas la ville], ~[la station] ~[Sherbrooke?]
+    ~[pas la station] @[city?], ~[la ville]
+    ~[pas la station], ~[la ville] @[city?]
+
+
+%[inform_rectify_metro_not_city]('training': '200', 'testing': '50')
+    ~[le métro] @[city?], ~[pas la ville]
+    ~[le métro], ~[pas la ville] @[city?]
+
+    ~[pas la ville] @[city?], ~[le métro]
+    ~[pas la ville], ~[le métro] @[city?]
+
+    ~[pas la ville] @[city?], ~[la station]
+    ~[pas la ville], ~[la station] @[city?]
 
 
 ~[la ville]
     la ville
     je veux la ville
+    je parle de la ville
 
 ~[le métro]
     le métro
     je veux le métro
+    je parle du métro
 
 ~[la station]
     la station
     je veux la station
     la station de métro
     je veux la station de métro
+    je parle de la station de métro
 
 ~[le quartier]
     le quartier
     l'arrondissement
     je veux le quartier
     je veux l'arrondissement
+    je parle du quartier
+    je parle de l'arrondissement
 
 ~[pas la ville]
     pas ville
     pas la ville
     non, pas la ville
     je ne veux pas la ville
+    je ne parle pas la ville
 
 ~[pas le métro]
     pas métro
     pas le métro
     non, pas le métro
     je ne veux pas le métro
+    je ne parle pas du métro
 
 ~[pas la station]
     pas la station
@@ -81,6 +89,7 @@
     pas la station de métro
     non, pas la station de métro
     je ne veux pas la station
+    je ne parle pas de la station
     je n'ai pas dis la station
     c'est pas la station de métro
     ce n'est pas la station
@@ -92,18 +101,5 @@
     non, pas l'arrondissement
     je ne veux pas le quartier
     je ne veux pas l'arrondissement
-
-~[Rosemont]
-    Rosemont
-    Outremont
-    Saint-Michel
-    Côte-des-Neiges
-    Saint-Laurent
-    LaSalle
-    Verdun
-    Mont-Royal
-    Saint-Henri
-
-~[Sherbrooke]
-    Sherbrooke
-    Longueuil
+    je ne parle pas du quartier
+    je ne parle pas de l'arrondissement

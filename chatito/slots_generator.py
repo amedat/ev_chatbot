@@ -8,24 +8,27 @@ slots = [
     {
         "name": 'quartier',
         "max" : None,
-        "function_list": [
-            "dash_space",
-        ],
+        "function_list": None,
+        # "function_list": [
+        #     "dash_space",
+        # ],
     },
     {
         "name": 'metro',
         "max": None,
-        "function_list": [
-            "dash_space",
-            "space_dash",
-        ],
+        "function_list": None,
+        # "function_list": [
+        #     "dash_space",
+        #     "space_dash",
+        # ],
     },
     {
         "name": 'city',
         "max" : 250,
-        "function_list": [
-            "dash_space",
-        ],
+        "function_list": None,
+        # "function_list": [
+        #     "dash_space",
+        # ],
     },
 ]
 
@@ -90,6 +93,7 @@ def process_slot(slot_name, max_entry, function_list):
 
 if __name__ == "__main__":
     all_slots_chatito_str = ""
+    random.seed(1972)
 
     for slot in slots:
         print(f"Processing slot <{slot['name']}>")

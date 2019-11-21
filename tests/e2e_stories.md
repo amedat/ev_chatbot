@@ -67,7 +67,7 @@
 ## city rectify to metro
 * ask_charging_point_place: combien de bornes de recharge à [Sherbrooke](city)?
   - action_charging_point_place
-* inform_rectify_metro_not_city: non, pas la ville de sherbrooke, la station de métro
+* inform_rectify_metro_not_city: non, pas la ville de [Sherbrooke](city), la station de métro
   - action_rectify_metro_not_city
   - action_charging_point_place
 
@@ -82,7 +82,7 @@
 * ask_charging_point_place: combien de place pour recharger dans l'arrondissement [Rosemont](quartier) 
   - slot{"quartier": "Rosemont"}
   - action_charging_point_place
-* inform_rectify_metro_not_quartier: non, le metro rosemont pas le quartier
+* inform_rectify_metro_not_quartier: non, le metro [Rosemont](metro) pas le quartier
   - slot{"metro": "Rosemont"}
   - action_rectify_metro_not_quartier
   - action_charging_point_place 
