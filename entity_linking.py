@@ -257,6 +257,18 @@ class CityMetro(Component):
                             selected_entity = 'city'
                             disambiguated = True
 
+                # DISAMBIGUATION - VERY LOW CONFIDENCE IN THE CRFENTITYEXTRACTOR CANDIDATE
+                if not disambiguated and entity['entity_linking'][selected_entity]['confidence'] < 0.60:
+                    if entity['entity_linking']['city']['confidence'] > 0.95:
+                        selected_entity = 'city'
+                        disambiguated = True
+                    elif entity['entity_linking']['metro']['confidence'] > 0.95:
+                        selected_entity = 'metro'
+                        disambiguated = True
+                    elif entity['entity_linking']['quartier']['confidence'] > 0.95:
+                        selected_entity = 'quartier'
+                        disambiguated = True
+
                 # apply the entity found by entity linking model
                 if entity['entity'] != selected_entity:
                     logger.info(f"*** CRFEntityExtractor decision changed ***")
