@@ -3,45 +3,63 @@
   - action_charging_point_place
   - slot{"found_charging_point": 5}
 
-## CITY - charging point
-* ask_charging_point_place{"city":"saguenay"}
+## CITY RECTIFY TO METRO - charging point
+* ask_charging_point_place{"city":"sherbrooke"}
+  - slot{"city": "sherbrooke"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
-
-## CITY - charging point
-* ask_charging_point_place{"city":"trois-rivieres"}
-  - action_charging_point_place
-  - slot{"found_charging_point": 5}
+* inform_rectify_metro_not_city
+  - action_rectify_metro_not_city
+  - slot{"metro": "sherbrooke"}
+  - slot{"city": null}
+  - action_charging_point_place 
+  - slot{"found_charging_point": 2}
 
 ## METRO - charging point
 * ask_charging_point_place{"metro":"angrignon"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
 
-## METRO - charging point
-* ask_charging_point_place{"metro":"beaubien"}
+## METRO RECTIFY TO CITY - charging point
+* ask_charging_point_place{"metro":"longueuil"}
+  - slot{"metro": "longueuil"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
+* inform_rectify_city_not_metro
+  - action_rectify_city_not_metro
+  - slot{"city": "longueuil"}
+  - slot{"metro": null}
+  - action_charging_point_place 
+  - slot{"found_charging_point": 2}
 
-## METRO - charging point
-* ask_charging_point_place{"metro":"square-victoria"}
+## METRO RECTIFY TO QUARTIER - charging point ##
+* ask_charging_point_place{"metro":"côte-des-neiges"}
+  - slot{"metro": "côte-des-neiges"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
+* inform_rectify_quartier_not_metro
+  - action_rectify_quartier_not_metro
+  - slot{"quartier": "côte-des-neiges"}
+  - slot{"metro": null}
+  - action_charging_point_place 
+  - slot{"found_charging_point": 2}
 
 ## QUARTIER - charging point
 * ask_charging_point_place{"quartier":"le plateau"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
 
-## QUARTIER - charging point
-* ask_charging_point_place{"quartier":"centre-ville"}
+## QUARTIER RECTIFY TO METRO - charging point
+* ask_charging_point_place{"quartier":"rosemont"}
+  - slot{"quartier":"rosemont"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
-
-## QUARTIER - charging point
-* ask_charging_point_place{"quartier":"ahuntsic"}
-  - action_charging_point_place
-  - slot{"found_charging_point": 5}
+* inform_rectify_metro_not_quartier
+  - action_rectify_metro_not_quartier
+  - slot{"metro": "rosemont"}
+  - slot{"quartier": null}
+  - action_charging_point_place 
+  - slot{"found_charging_point": 2}
 
 
 ## CITY - charging point + greet

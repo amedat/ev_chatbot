@@ -33,25 +33,96 @@ class ActionChargingPoinPlace(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
         count = 0
+        type = None
 
+        # First, look for paramaters from message
         msg_entities = tracker.latest_message.get('entities')
         if msg_entities and len(msg_entities) > 0:
-            msg_entity_type = msg_entities[0].get('entity')
-            msg_entity_value = msg_entities[0].get('value')
+            # Retrieve params from message
+            type = msg_entities[0].get('entity')
+            value = msg_entities[0].get('value')
+        else:
+            # Since there is nothing in message, then retrieve from slots
+            if tracker.get_slot('city'):
+                type, value = ('city', tracker.get_slot('city'))
+            elif tracker.get_slot('metro'):
+                type, value = ('metro', tracker.get_slot('metro'))
+            elif tracker.get_slot('quartier'):
+                type, value = ('quartier', tracker.get_slot('quartier'))
 
-            if msg_entity_type:
-                graph = Graph(password='abcd')
+        if type:
+            graph = Graph(password='abcd')
 
-                if msg_entity_type == 'city':
-                    count = self.count_charging_point_in_city(graph, msg_entity_value)
-                    dispatcher.utter_message(f"Il y a {count} bornes de recharge à {msg_entity_value}.")
-                elif msg_entity_type == 'metro':
-                    count = self.count_charging_point_near_metro(graph, msg_entity_value)
-                    dispatcher.utter_message(f"Il y a {count} endroits à moins de 500m du métro {msg_entity_value}.")
-                elif msg_entity_type == 'quartier':
-                    count = self.count_charging_point_in_quartier(graph, msg_entity_value)
-                    dispatcher.utter_message(f"Il y a {count} bornes dans le quartier {msg_entity_value}.")
+            if type == 'city':
+                count = self.count_charging_point_in_city(graph, value)
+                dispatcher.utter_message(f"Il y a {count} bornes de recharge à {value}.")
+            elif type == 'metro':
+                count = self.count_charging_point_near_metro(graph, value)
+                dispatcher.utter_message(f"Il y a {count} endroits à moins de 500m du métro {value}.")
+            elif type == 'quartier':
+                count = self.count_charging_point_in_quartier(graph, value)
+                dispatcher.utter_message(f"Il y a {count} bornes dans le quartier {value}.")
         else:
             dispatcher.utter_message(f"Pour quel endroit voulez-vous connaitre les bornes de recharge?")
 
-        return [SlotSet("found_charging_point", count)] if count > 0 else []
+        return [SlotSet("found_charging_point", count if count > 0 else None)]
+
+
+class ActionRectifyCityNotMetro(Action):
+
+    def name(self):
+        return "action_rectify_city_not_metro"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message("Oups, désolé...")
+
+        metro_name = tracker.get_slot('metro')
+        return [SlotSet("city", metro_name), SlotSet("metro", None)]
+
+
+class ActionRectifyMetroNotCity(Action):
+
+    def name(self):
+        return "action_rectify_metro_not_city"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message("Oups, désolé...")
+
+        city_name = tracker.get_slot('city')
+        return [SlotSet("metro", city_name), SlotSet("city", None)]
+
+
+class ActionRectifyQuartierNotMetro(Action):
+
+    def name(self):
+        return "action_rectify_quartier_not_metro"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message("Oups, désolé...")
+
+        metro_name = tracker.get_slot('metro')
+        return [SlotSet("quartier", metro_name), SlotSet("metro", None)]
+
+
+class ActionRectifyMetroNotQuartier(Action):
+
+    def name(self):
+        return "action_rectify_metro_not_quartier"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message("Oups, désolé...")
+
+        quartier_name = tracker.get_slot('quartier')
+        return [SlotSet("metro", quartier_name), SlotSet("quartier", None)]

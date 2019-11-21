@@ -1,0 +1,109 @@
+
+%[inform_rectify_quartier_not_metro]('training': '100', 'testing': '25')
+    ~[le quartier] ~[Rosemont?], ~[pas le métro]
+    ~[le quartier], ~[pas le métro] ~[Rosemont?]
+
+    ~[pas le métro] ~[Rosemont?], ~[le quartier]
+    ~[pas le métro], ~[le quartier] ~[Rosemont?]
+
+    ~[pas la station] ~[Rosemont?], ~[le quartier]
+    ~[pas la station], ~[le quartier] ~[Rosemont?]
+
+
+%[inform_rectify_metro_not_quartier]('training': '100', 'testing': '25')
+    ~[le métro] ~[Rosemont?], ~[pas le quartier]
+    ~[le métro], ~[pas le quartier] ~[Rosemont?]
+
+    ~[pas le quartier] ~[Rosemont?], ~[le métro]
+    ~[pas le quartier], ~[le métro] ~[Rosemont?]
+
+    ~[pas le quartier] ~[Rosemont?], ~[la station]
+    ~[pas le quartier], ~[la station] ~[Rosemont?]
+
+
+%[inform_rectify_city_not_metro]('training': '100', 'testing': '25')
+    ~[la ville] ~[Sherbrooke?], ~[pas le métro]
+    ~[la ville], ~[pas le métro] ~[Sherbrooke?]
+
+    ~[pas le métro] ~[Sherbrooke?], ~[la ville]
+    ~[pas le métro], ~[la ville] ~[Sherbrooke?]
+
+    ~[pas la station] ~[Sherbrooke?], ~[la ville]
+    ~[pas la station], ~[la ville] ~[Sherbrooke?]
+
+
+%[inform_rectify_metro_not_city]('training': '100', 'testing': '25')
+    ~[le métro] ~[Sherbrooke?], ~[pas la ville]
+    ~[le métro], ~[pas la ville] ~[Sherbrooke?]
+
+    ~[pas la ville] ~[Sherbrooke?], ~[le métro]
+    ~[pas la ville], ~[le métro] ~[Sherbrooke?]
+
+    ~[pas la ville] ~[Sherbrooke?], ~[la station]
+    ~[pas la ville], ~[la station] ~[Sherbrooke?]
+
+
+~[la ville]
+    la ville
+    je veux la ville
+
+~[le métro]
+    le métro
+    je veux le métro
+
+~[la station]
+    la station
+    je veux la station
+    la station de métro
+    je veux la station de métro
+
+~[le quartier]
+    le quartier
+    l'arrondissement
+    je veux le quartier
+    je veux l'arrondissement
+
+~[pas la ville]
+    pas ville
+    pas la ville
+    non, pas la ville
+    je ne veux pas la ville
+
+~[pas le métro]
+    pas métro
+    pas le métro
+    non, pas le métro
+    je ne veux pas le métro
+
+~[pas la station]
+    pas la station
+    non, pas la station
+    pas la station de métro
+    non, pas la station de métro
+    je ne veux pas la station
+    je n'ai pas dis la station
+    c'est pas la station de métro
+    ce n'est pas la station
+
+~[pas le quartier]
+    pas le quartier
+    pas l'arrondissement
+    non, pas le quartier
+    non, pas l'arrondissement
+    je ne veux pas le quartier
+    je ne veux pas l'arrondissement
+
+~[Rosemont]
+    Rosemont
+    Outremont
+    Saint-Michel
+    Côte-des-Neiges
+    Saint-Laurent
+    LaSalle
+    Verdun
+    Mont-Royal
+    Saint-Henri
+
+~[Sherbrooke]
+    Sherbrooke
+    Longueuil

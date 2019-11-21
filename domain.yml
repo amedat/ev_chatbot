@@ -6,6 +6,10 @@ intents:
 - mood_great
 - mood_unhappy
 - ask_charging_point_place
+- inform_rectify_city_not_metro
+- inform_rectify_metro_not_city
+- inform_rectify_quartier_not_metro
+- inform_rectify_metro_not_quartier
 entities:
 - city
 - metro
@@ -38,3 +42,7 @@ actions:
 - utter_happy
 - utter_goodbye
 - action_charging_point_place
+- action_rectify_city_not_metro
+- action_rectify_metro_not_city
+- action_rectify_quartier_not_metro
+- action_rectify_metro_not_quartier
