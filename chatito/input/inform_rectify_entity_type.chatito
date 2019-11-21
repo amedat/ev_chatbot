@@ -1,6 +1,6 @@
 import ./slots.chatito
 
-%[inform_rectify_quartier_not_metro]('training': '200', 'testing': '50')
+%[inform_rectify_quartier_metro]('training': '200', 'testing': '50')
     ~[le quartier] @[quartier?], ~[pas le métro]
     ~[le quartier], ~[pas le métro] @[quartier?]
 
@@ -10,8 +10,6 @@ import ./slots.chatito
     ~[pas la station] @[quartier?], ~[le quartier]
     ~[pas la station], ~[le quartier] @[quartier?]
 
-
-%[inform_rectify_metro_not_quartier]('training': '200', 'testing': '50')
     ~[le métro] @[quartier?], ~[pas le quartier]
     ~[le métro], ~[pas le quartier] @[quartier?]
 
@@ -22,7 +20,7 @@ import ./slots.chatito
     ~[pas le quartier], ~[la station] @[quartier?]
 
 
-%[inform_rectify_city_not_metro]('training': '200', 'testing': '50')
+%[inform_rectify_city_metro]('training': '200', 'testing': '50')
     ~[la ville] @[city?], ~[pas le métro]
     ~[la ville], ~[pas le métro] @[city?]
 
@@ -32,8 +30,6 @@ import ./slots.chatito
     ~[pas la station] @[city?], ~[la ville]
     ~[pas la station], ~[la ville] @[city?]
 
-
-%[inform_rectify_metro_not_city]('training': '200', 'testing': '50')
     ~[le métro] @[city?], ~[pas la ville]
     ~[le métro], ~[pas la ville] @[city?]
 

@@ -68,25 +68,10 @@ class ActionChargingPoinPlace(Action):
         return [SlotSet("found_charging_point", count if count > 0 else None)]
 
 
-class ActionRectifyCityNotMetro(Action):
+class ActionRectifyCityMetro(Action):
 
     def name(self):
-        return "action_rectify_city_not_metro"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        dispatcher.utter_message("Oups, désolé...")
-
-        metro_name = tracker.get_slot('metro')
-        return [SlotSet("city", metro_name), SlotSet("metro", None)]
-
-
-class ActionRectifyMetroNotCity(Action):
-
-    def name(self):
-        return "action_rectify_metro_not_city"
+        return "action_rectify_city_metro"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
@@ -95,13 +80,14 @@ class ActionRectifyMetroNotCity(Action):
         dispatcher.utter_message("Oups, désolé...")
 
         city_name = tracker.get_slot('city')
-        return [SlotSet("metro", city_name), SlotSet("city", None)]
+        metro_name = tracker.get_slot('metro')
+        return [SlotSet("city", metro_name), SlotSet("metro", city_name)]
 
 
-class ActionRectifyQuartierNotMetro(Action):
+class ActionRectifyQuartierMetro(Action):
 
     def name(self):
-        return "action_rectify_quartier_not_metro"
+        return "action_rectify_quartier_metro"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
@@ -110,19 +96,5 @@ class ActionRectifyQuartierNotMetro(Action):
         dispatcher.utter_message("Oups, désolé...")
 
         metro_name = tracker.get_slot('metro')
-        return [SlotSet("quartier", metro_name), SlotSet("metro", None)]
-
-
-class ActionRectifyMetroNotQuartier(Action):
-
-    def name(self):
-        return "action_rectify_metro_not_quartier"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        dispatcher.utter_message("Oups, désolé...")
-
         quartier_name = tracker.get_slot('quartier')
-        return [SlotSet("metro", quartier_name), SlotSet("quartier", None)]
+        return [SlotSet("quartier", metro_name), SlotSet("metro", quartier_name)]

@@ -8,8 +8,8 @@
   - slot{"city": "sherbrooke"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
-* inform_rectify_metro_not_city
-  - action_rectify_metro_not_city
+* inform_rectify_city_metro
+  - action_rectify_city_metro
   - slot{"metro": "sherbrooke"}
   - slot{"city": null}
   - action_charging_point_place 
@@ -25,8 +25,8 @@
   - slot{"metro": "longueuil"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
-* inform_rectify_city_not_metro
-  - action_rectify_city_not_metro
+* inform_rectify_city_metro
+  - action_rectify_city_metro
   - slot{"city": "longueuil"}
   - slot{"metro": null}
   - action_charging_point_place 
@@ -37,8 +37,8 @@
   - slot{"metro": "côte-des-neiges"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
-* inform_rectify_quartier_not_metro
-  - action_rectify_quartier_not_metro
+* inform_rectify_quartier_metro
+  - action_rectify_quartier_metro
   - slot{"quartier": "côte-des-neiges"}
   - slot{"metro": null}
   - action_charging_point_place 
@@ -54,8 +54,8 @@
   - slot{"quartier":"rosemont"}
   - action_charging_point_place
   - slot{"found_charging_point": 5}
-* inform_rectify_metro_not_quartier
-  - action_rectify_metro_not_quartier
+* inform_rectify_quartier_metro
+  - action_rectify_quartier_metro
   - slot{"metro": "rosemont"}
   - slot{"quartier": null}
   - action_charging_point_place 

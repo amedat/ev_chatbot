@@ -67,31 +67,31 @@
 ## city rectify to metro
 * ask_charging_point_place: combien de bornes de recharge à [Sherbrooke](city)?
   - action_charging_point_place
-* inform_rectify_metro_not_city: non, pas la ville de [Sherbrooke](city), la station de métro
-  - action_rectify_metro_not_city
+* inform_rectify_city_metro: non, pas la ville de [Sherbrooke](city), la station de métro
+  - action_rectify_city_metro
   - action_charging_point_place
 
 ## metro rectify to city
 * ask_charging_point_place: bornes au metro [Sherbrooke](metro)
   - action_charging_point_place
-* inform_rectify_city_not_metro: je parle de la ville pas de la station 
-  - action_rectify_city_not_metro
+* inform_rectify_city_metro: je parle de la ville pas de la station 
+  - action_rectify_city_metro
   - action_charging_point_place 
 
 ## quartier rectify to metro
 * ask_charging_point_place: combien de place pour recharger dans l'arrondissement [Rosemont](quartier) 
   - slot{"quartier": "Rosemont"}
   - action_charging_point_place
-* inform_rectify_metro_not_quartier: non, le metro [Rosemont](metro) pas le quartier
+* inform_rectify_quartier_metro: non, le metro [Rosemont](metro) pas le quartier
   - slot{"metro": "Rosemont"}
-  - action_rectify_metro_not_quartier
+  - action_rectify_quartier_metro
   - action_charging_point_place 
 
 ## metro rectify to quartier
 * ask_charging_point_place: combien de bornes proche du metro [cote des neiges](metro:Côte-des-Neiges)
   - slot{"metro": "Côte-des-Neiges"}
   - action_charging_point_place
-* inform_rectify_quartier_not_metro: pas le metro, le quartier
-  - action_rectify_quartier_not_metro
+* inform_rectify_quartier_metro: pas le metro, le quartier
+  - action_rectify_quartier_metro
   - slot{"quartier": "Côte-des-Neiges"}
   - action_charging_point_place 
