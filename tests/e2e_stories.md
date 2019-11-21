@@ -32,6 +32,12 @@
 * ask_charging_point_place: Est-ce qu'il y a des bornes pres du metro [st henry](metro:Place-Saint-Henri)
   - action_charging_point_place
 
+## ----- CITY DISAMBIGUATION -----
+
+## city ofter identified as metro by the CRFEntityExtractor
+* ask_charging_point_place: bornes à [jean richelieu](city:Saint-Jean-sur-Richelieu)?
+  - action_charging_point_place
+
 ## ----- STATION DISAMBIGUATION -----
 
 ## metro
