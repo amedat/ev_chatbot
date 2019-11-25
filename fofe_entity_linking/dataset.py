@@ -4,6 +4,7 @@ import os
 import pickle
 import random
 import re
+import torch
 import unidecode
 
 import numpy as np
@@ -99,6 +100,21 @@ class DatasetGenerator(object):
         self._remove_duplicate_samples()
 
         self.labels_weight = self._get_weight_labels()
+
+        if len(self.labels_weight) != len(self.labels):
+            # find labels that disappeared with the call to _remove_duplicate_samples()
+            index_list = list(range(len(self.labels)))
+            df = pd.read_csv(StringIO(self.training_set_list), sep=',', header=None)
+            for index, row in df.iterrows():
+                # if the label index for this sample is still in the index_list, then remove it
+                if row[1] in index_list:
+                    index_list.remove(row[1])
+
+            assert len(self.labels_weight) == len(self.labels), \
+                   f"Labels weight list do not match labels: {len(self.labels_weight)} != {len(self.labels)}\n" \
+                   f"Those labels have been removed by _remove_duplicate_samples() function:\n" \
+                   f"{[self.labels[i] for i in index_list]}\n" \
+                   f"{index_list}"
 
     @staticmethod
     def normalize_name(s):
@@ -531,6 +547,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # -------------------------------------
+    print(f"torch.cuda.is_available() = {torch.cuda.is_available()}")
 
     # training set generation
     training_set_filename, labels_filename, base_filename = generate_training_set(args)

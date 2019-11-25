@@ -324,6 +324,9 @@ if __name__ == "__main__":
     # load labels weight to balance the training data
     labels, label2idx, labels_weight = pickle.load(open(args.label_weight_path, "rb"))
 
+    # make sure the labels and labels_weight are correct before proceeding
+    assert len(labels_weight) == len(labels), f"Labels weight list do not match labels: {len(labels_weight)} != {len(labels)}"
+
     # load embedding
     embedding = NgramEmbedding(embedding_filename=args.embedding_path,
                                vocab_filename=args.vocab_path)
