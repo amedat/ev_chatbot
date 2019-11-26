@@ -61,6 +61,11 @@
   - action_charging_point_place 
   - slot{"found_charging_point": 2}
 
+## STREET - charging point
+* ask_charging_point_place{"street":"saint-laurent"}
+  - action_charging_point_place
+  - slot{"found_charging_point": 5}
+
 
 ## CITY - charging point + greet
 * greet

@@ -35,11 +35,13 @@ class CityMetro(Component):
         self.cities_data_filename = "./fofe_entity_linking/cities.csv"
         self.metro_data_filename = "./fofe_entity_linking/metro.csv"
         self.quartier_data_filename = "./fofe_entity_linking/quartiers.csv"
+        self.street_data_filename = "./fofe_entity_linking/streets_montreal.csv"
 
         # create exact match map from data
         self.exact_map_cities = self.create_exact_map(self.cities_data_filename)
         self.exact_map_metro = self.create_exact_map(self.metro_data_filename)
         self.exact_map_quartier = self.create_exact_map(self.quartier_data_filename)
+        self.exact_map_steet = self.create_exact_map(self.street_data_filename)
 
         # load cities model
         self.cities_model, self.cities_embedding = predict.load_models(
@@ -68,6 +70,15 @@ class CityMetro(Component):
             self.quartier_labels, _, _ = pickle.load(quartier_label_file)
         logger.info(f"*** {len(self.quartier_labels)} quartiers ***")
 
+        # load steet model
+        self.streets_model, self.streets_embedding = predict.load_models(
+                                                "./fofe_entity_linking/models/streets_montreal.pth",
+                                                "./fofe_entity_linking/data/streets_montreal_embedding.pth",
+                                                "./fofe_entity_linking/data/streets_montreal_vocab.pickle")
+        with open("./fofe_entity_linking/data/streets_montreal_training_labels.pickle", "rb") as streets_label_file:
+            self.streets_labels, _, _ = pickle.load(streets_label_file)
+        logger.info(f"*** {len(self.streets_labels)} streets ***")
+
     @staticmethod
     def train_model(model_name, script_path, data_filename):
         if CityMetro.data_changed(data_filename):
@@ -89,6 +100,7 @@ class CityMetro(Component):
         self.train_model("cities", "./train_cities.sh", self.cities_data_filename)
         self.train_model("metro", "./train_metro.sh", self.metro_data_filename)
         self.train_model("quartiers", "./train_quartiers.sh", self.quartier_data_filename)
+        self.train_model("streets_montreal", "./train_steets_montreal.sh", self.street_data_filename)
 
     @staticmethod
     def expand_saint_abreviation(s):
@@ -178,12 +190,13 @@ class CityMetro(Component):
         # check for a city or metro entity detected by the Entity Extractor
         #   entities => [{'start': 16, 'end': 25, 'value': 'longueuil', 'entity': 'metro', 'confidence': 0.99112538,
         #                 'extractor': 'CRFEntityExtractor'}]
-        entities = [e for e in message.get('entities') if e['entity'] in ['city', 'metro', 'quartier']]
+        entities = [e for e in message.get('entities') if e['entity'] in ['city', 'metro', 'quartier', 'street']]
 
         if entities:
             self.predict_entity_linking(entities, self.cities_model, self.cities_embedding, self.cities_labels, self.exact_map_cities, "city")
             self.predict_entity_linking(entities, self.metro_model, self.metro_embedding, self.metro_labels, self.exact_map_metro, "metro")
             self.predict_entity_linking(entities, self.quartier_model, self.quartier_embedding, self.quartier_labels, self.exact_map_quartier, "quartier")
+            self.predict_entity_linking(entities, self.streets_model, self.streets_embedding, self.streets_labels, self.exact_map_steet, "street")
 
             # logger.info(f"*** {entities} ***")
             # entities example:

@@ -12,12 +12,15 @@ entities:
 - city
 - metro
 - quartier
+- street
 slots:
   city:
     type: text
   metro:
     type: text
   quartier:
+    type: text
+  street:
     type: text
   found_charging_point:
     type: text

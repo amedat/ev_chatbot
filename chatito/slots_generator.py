@@ -30,6 +30,14 @@ slots = [
         #     "dash_space",
         # ],
     },
+    {
+        "name": 'street',
+        "max" : 250,
+        "function_list": None,
+        # "function_list": [
+        #     "dash_space",
+        # ],
+    },
 ]
 
 

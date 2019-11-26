@@ -28,6 +28,11 @@ class ActionChargingPoinPlace(Action):
         return graph.run("MATCH (QuartierMontreal {name:{quartierName}})<-[:IN*]-(p:ChargingPoint) RETURN count(p)",
                          quartierName=quartier_name).evaluate()
 
+    @staticmethod
+    def count_charging_point_street(graph, street_name):
+        return graph.run("MATCH (Street {name:{streetName}})-[:CROSS]->(Intersection)<-[:NEARBY]-(ChargingPark)<-[:IN]-(p:ChargingPoint) RETURN count(p)",
+                         streetName=street_name).evaluate()
+
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
@@ -49,6 +54,8 @@ class ActionChargingPoinPlace(Action):
                 type, value = ('metro', tracker.get_slot('metro'))
             elif tracker.get_slot('quartier'):
                 type, value = ('quartier', tracker.get_slot('quartier'))
+            elif tracker.get_slot('street'):
+                type, value = ('street', tracker.get_slot('street'))
 
         if type:
             graph = Graph(password='abcd')
@@ -62,6 +69,9 @@ class ActionChargingPoinPlace(Action):
             elif type == 'quartier':
                 count = self.count_charging_point_in_quartier(graph, value)
                 dispatcher.utter_message(f"Il y a {count} bornes dans le quartier {value}.")
+            elif type == 'street':
+                count = self.count_charging_point_street(graph, value)
+                dispatcher.utter_message(f"Il y a {count} bornes près de la rue {value}.")
         else:
             dispatcher.utter_message(f"Pour quel endroit voulez-vous connaitre les bornes de recharge?")
 

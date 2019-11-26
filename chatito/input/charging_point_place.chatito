@@ -1,7 +1,7 @@
 import ./common.chatito
 import ./slots.chatito
 
-%[ask_charging_point_place]('training': '3000', 'testing': '500')
+%[ask_charging_point_place]('training': '4000', 'testing': '800')
     ~[bornes] ~[à] @[city]
     ~[bonjour?] ~[où sont les] ~[bornes] ~[à] @[city]
     ~[dans la ville de] @[city] ~[où sont les] ~[bornes]
@@ -26,6 +26,40 @@ import ./slots.chatito
     ~[svp?] ~[combien de?] ~[bornes] ~[dans le quartier] @[quartier]
     ~[comment recharger] ~[dans le quartier] @[quartier]
 
+    ~[bornes] ~[sur la rue] @[street]
+    ~[combien de] ~[bornes] @[street]
+    ~[bonjour?] ~[où sont les] ~[bornes] ~[sur la rue] @[street]
+    ~[près de la rue] @[street] ~[où sont les] ~[bornes]
+    ~[bornes] ~[au coin de] @[street] et ~[boulevard?] @[street]
+    ~[bornes] ~[au coin de?] @[street] ~[et?] @[street]
+
+
+~[près de la rue]
+    près de la rue
+    proche de la rue
+    près de l'avenue
+    proche de l'avenue
+    près du boulevard
+    proche du boulevard
+
+~[sur la rue]
+    rue
+    avenue
+    boulevard
+    sur la rue
+    sur l'avenue
+    sur le boulevard
+
+~[au coin de]
+    au coin de
+    au coin de la rue
+    au coin de l'avenue
+    au coin du boulevard
+
+~[boulevard]
+    boulevard
+    rue
+    avenue
 
 ~[combien de]
     combien de
@@ -33,7 +67,6 @@ import ./slots.chatito
     combien y a de
     y-a-t-il des
     est-ce qu'il y des
-    y as-tu des
     il y a combien de
     y a combien de
 
