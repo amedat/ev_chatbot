@@ -2,10 +2,10 @@
 
 import ./common.chatito
 
-%[affirm]('training': '50', 'testing': '50')
+%[affirm]('training': '25', 'testing': '10')
     *[20%] ~[oui]
     ~[oui] ~[svp?]
-    ~[oui] ~[oui?] ~[merci?]
+    ~[oui] ~[merci?]
     ~[oui?] ~[c'est bon] ~[oui?]
 
 ~[oui]

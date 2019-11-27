@@ -2,7 +2,7 @@
 
 import ./common.chatito
 
-%[goodbye]('training': '25', 'testing': '25')
+%[goodbye]('training': '25', 'testing': '10')
     *[20%] ~[au revoir]
     ~[merci?] ~[au revoir]
     ~[au revoir] ~[merci?]
@@ -16,11 +16,8 @@ import ./common.chatito
     a+
     à la prochaine
     à plus tard
-    on se voit bientôt
+    à bientôt
     bye
-    adieu
-    adios
-    chao
 
 ~[je quitte]
     je quitte

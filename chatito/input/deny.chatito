@@ -2,9 +2,8 @@
 
 import ./common.chatito
 
-%[deny]('training': '50', 'testing': '50')
-    *[20%] ~[non]
-    ~[non] ~[svp?] ~[c'est pas bon]
+%[deny]('training': '10', 'testing': '5')
+    ~[non]
     ~[svp?] ~[non] ~[c'est pas bon?]
 
 ~[non]
@@ -14,12 +13,3 @@ import ./common.chatito
     pas correcte
     pas vraiment
 
-~[c'est pas bon]
-    c'est pas bon
-    c'est pas ça
-    c'est pas ok
-    je ne veux pas
-    ce n'est pas correcte
-    c'est pas ce que je veux dire
-    pas ok
-    pas bon

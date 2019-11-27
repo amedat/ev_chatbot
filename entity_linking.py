@@ -264,7 +264,7 @@ class CityMetro(Component):
                 # DISAMBIGUATION - QUARTIER
                 if not disambiguated:
                     if entity['entity_linking']['quartier']['confidence'] > 0.60:
-                        if any(keyword in text_15_chars_before for keyword in ['quartier', 'dissement']):  # dissement -> arrondissement
+                        if any(keyword in text_15_chars_before for keyword in ['quartier', 'dissement', 'secteur']):  # dissement -> arrondissement
                             # some keywords confirm that we are talking of a quartier of Montreal.
                             # ex: <Rosemont> guess as <Rougemont> city but is a quartier: "bornes dans le quartier Rosemont"
                             selected_entity = 'quartier'

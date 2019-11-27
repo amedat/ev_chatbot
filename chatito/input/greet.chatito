@@ -2,12 +2,9 @@
 
 import ./common.chatito
 
-%[greet]('training': '25', 'testing': '25')
-    *[20%] ~[bonjour]
+%[greet]('training': '15', 'testing': '5')
+    ~[bonjour]
     ~[salutations]
-    ~[bonjour] ~[salutations?]
-    ~[bonjour] ~[quoi de neuf]
-    ~[salutations] ~[quoi de neuf]
 
 ~[salutations]
     salutations
@@ -16,10 +13,3 @@ import ./common.chatito
     bonne soirée
     bonne nuit
     bonne journée
-
-~[quoi de neuf]
-    quoi de neuf
-    comment ça va
-    comment vas-tu
-    comment vont les affaires
-    as-tu du neuf

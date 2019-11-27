@@ -94,6 +94,28 @@ class ActionChargingPointPlace(Action):
 
         return [SlotSet("found_charging_point", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
 
+    def one_street_quartier_charging_point(self, dispatcher, place_entities):
+        graph = Graph(password='abcd')
+
+        quartier_name = [e for e in place_entities if e['entity'] == 'quartier'][0]['value']
+        street_name = [e for e in place_entities if e['entity'] == 'street'][0]['value']
+
+        r = graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(i:Intersection)-[:IN]->(:QuartierMontreal {name:{quartierName}}) \
+                       MATCH (i)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
+                      streetName=street_name, quartierName=quartier_name).data()
+
+        if r[0]['chargingPointCount'] == 0:
+            msg = f"Malheureusement, il n'y a aucune borne près {street_name} dans le quartier {quartier_name}."
+        else:
+            if r[0]['chargingParkCount'] > 1:
+                msg = f"Il y a {r[0]['chargingPointCount']} bornes dans {r[0]['chargingParkCount']} emplacements près de {street_name} dans le quartier {quartier_name}."
+            else:
+                msg = f"Il y a {r[0]['chargingPointCount']} bornes près de {street_name} dans le quartier {quartier_name}."
+        dispatcher.utter_message(msg)
+
+        return [SlotSet("found_charging_point", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
+
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
@@ -109,9 +131,13 @@ class ActionChargingPointPlace(Action):
             return self.single_entity(dispatcher, place_entities[0]['entity'], place_entities[0]['value'])
         
         elif entity_count == 2:
-            # Bornes au coin du boulevard Saint-Laurent et Sainte-Catherine
             if self.is_type_equal(['street', 'street'], place_entities):
+                # Bornes au coin du boulevard Saint-Laurent et Sainte-Catherine
                 return self.two_streets_charging_point(dispatcher, place_entities)
+
+            elif self.is_type_equal(['quartier', 'street'], place_entities):
+                # Bornes sur le boulevard Saint-Laurent dans le quartier Rosemont
+                return self.one_street_quartier_charging_point(dispatcher, place_entities)
 
         else:
             dispatcher.utter_message(f"Pour quel endroit voulez-vous connaitre les bornes de recharge?")
