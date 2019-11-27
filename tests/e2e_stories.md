@@ -95,3 +95,8 @@
   - action_rectify_quartier_metro
   - slot{"quartier": "Côte-des-Neiges"}
   - action_charging_point_place 
+
+
+## two streets intersection
+* ask_charging_point_place: bornes au coin du boulevard [Saint-Laurent](street) et [Sainte-Catherine](street)
+  - action_charging_point_place
