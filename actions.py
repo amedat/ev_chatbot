@@ -12,8 +12,10 @@ class ActionChargingPointPlace(Action):
         return "action_charging_point_place"
 
     def count_charging_point_in_city(self, graph, city_name):
-        return graph.run("MATCH (:City {name:{cityName}})<-[:IN*]-(p:ChargingPoint) RETURN count(p)",
-                         cityName=city_name).evaluate()
+        r = graph.run("MATCH (:City {name:{cityName}})<-[:IN]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
+                       cityName=city_name).data()
+        return r[0]['chargingPointCount'], r[0]['chargingParkCount']
 
     def count_charging_point_near_metro(self, graph, metro_name):
         # Charging parks at less than 500m of Pie-IX metro station
@@ -22,12 +24,17 @@ class ActionChargingPointPlace(Action):
             metroName=metro_name).evaluate()
 
     def count_charging_point_in_quartier(self, graph, quartier_name):
-        return graph.run("MATCH (:QuartierMontreal {name:{quartierName}})<-[:IN*]-(p:ChargingPoint) RETURN count(p)",
-                         quartierName=quartier_name).evaluate()
+        r = graph.run("MATCH (:QuartierMontreal {name:{quartierName}})<-[:IN]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
+                       quartierName=quartier_name).data()
+        return r[0]['chargingPointCount'], r[0]['chargingParkCount']
 
     def count_charging_point_street(self, graph, street_name):
-        return graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(:Intersection)<-[:NEARBY]-(:ChargingPark)<-[:IN]-(p:ChargingPoint) RETURN count(p)",
-                         streetName=street_name).evaluate()
+        r = graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(:Intersection) \
+                       <-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
+                       streetName=street_name).data()
+        return r[0]['chargingPointCount'], r[0]['chargingParkCount']
 
     def is_entity_in_list(self, type, value, place_entities):
         """ Returns True if the type and value specified exists in the entity list. """
@@ -53,24 +60,49 @@ class ActionChargingPointPlace(Action):
 
         return sorted(place_entities, key=lambda k: k['entity'])
 
+    def dispatch_message(self, dispatcher, point_count, park_count, msg_none, msg_many_one, msg_many_many):
+        if point_count == 0:
+            msg = msg_none
+        else:
+            if park_count > 1:
+                msg = msg_many_many
+            else:
+                msg = msg_many_one
+        dispatcher.utter_message(msg)
+
     def single_entity(self, dispatcher, type, value):
-        count = 0
+        point_count = 0
         graph = Graph(password='abcd')
 
         if type == 'city':
-            count = self.count_charging_point_in_city(graph, value)
-            dispatcher.utter_message(f"Il y a {count} bornes de recharge à {value}.")
+            point_count, park_count = self.count_charging_point_in_city(graph, value)
+
+            self.dispatch_message(dispatcher, point_count, park_count,
+                                  f"Malheureusement, il n'y a aucune borne à {value}.",
+                                  f"Il y a {point_count} bornes à {value}.",
+                                  f"Il y a {point_count} bornes dans {park_count} emplacements à {value}.")
+
         elif type == 'metro':
             count = self.count_charging_point_near_metro(graph, value)
-            dispatcher.utter_message(f"Il y a {count} endroits à moins de 500m du métro {value}.")
-        elif type == 'quartier':
-            count = self.count_charging_point_in_quartier(graph, value)
-            dispatcher.utter_message(f"Il y a {count} bornes dans le quartier {value}.")
-        elif type == 'street':
-            count = self.count_charging_point_street(graph, value)
-            dispatcher.utter_message(f"Il y a {count} bornes près de la rue {value}.")
+            dispatcher.utter_message(f"Il y a {count} emplacements à moins de 500m du métro {value}.")
 
-        return [SlotSet("found_charging_point", count if count > 0 else None)]
+        elif type == 'quartier':
+            point_count, park_count = self.count_charging_point_in_quartier(graph, value)
+
+            self.dispatch_message(dispatcher, point_count, park_count,
+                                  f"Malheureusement, il n'y a aucune borne dans le quartier {value}.",
+                                  f"Il y a {point_count} bornes dans le quartier {value}.",
+                                  f"Il y a {point_count} bornes dans {park_count} emplacements dans le quartier {value}.")
+
+        elif type == 'street':
+            point_count, park_count = self.count_charging_point_street(graph, value)
+
+            self.dispatch_message(dispatcher, point_count, park_count,
+                                  f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
+                                  f"Il y a {point_count} bornes près de la rue {value}.",
+                                  f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
+
+        return [SlotSet("found_charging_point", point_count if point_count > 0 else None)]
 
     def two_streets_charging_point(self, dispatcher, place_entities):
         graph = Graph(password='abcd')
