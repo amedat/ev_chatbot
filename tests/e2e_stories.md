@@ -97,6 +97,6 @@
   - action_charging_point_place 
 
 
-## two streets intersection
+## two streets intersection: bornes au coin du boulevard Saint-Laurent et Sainte-Catherine
 * ask_charging_point_place: bornes au coin du boulevard [Saint-Laurent](street) et [Sainte-Catherine](street)
   - action_charging_point_place

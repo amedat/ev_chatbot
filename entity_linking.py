@@ -237,25 +237,34 @@ class CityMetro(Component):
 
                 # default is entity selected by CRFEntityExtractor
                 selected_entity = entity['entity']
+                text_15_chars_before = message.text[max(0, entity['start'] - 15):entity['start']]
 
                 # DISAMBIGUATION - METRO
-                if entity['entity_linking']['metro']['confidence'] > 0.80:
-                    if any(keyword in message.text[:entity['start']] for keyword in ['métro']):
+                if entity['entity_linking']['metro']['confidence'] > 0.60:
+                    if any(keyword in text_15_chars_before for keyword in ['métro']):
                         # some keywords confirm that we are talking of a metro station.
                         # ex: <Longueuil> the city or the metro station: "bornes au métro Longueuil"
                         selected_entity = 'metro'
                         disambiguated = True
-                    elif 'station' in message.text[max(0,entity['start']-15):entity['start']]:
+                    elif 'station' in text_15_chars_before:
                         # the word station appears in the 15 chars before the entity name
                         # ex: <Longueuil> the city or the metro station: "bornes à la station Longueuil",
                         #                 but not "où sont les station de recharge à proximité de Longueuil"
                         selected_entity = 'metro'
                         disambiguated = True
 
+                # DISAMBIGUATION - STREET
+                if entity['entity_linking']['street']['confidence'] > 0.60:
+                    if any(keyword in text_15_chars_before for keyword in
+                           ['rue ', 'rues ', 'avenue', 'ave ', 'levard', 'boul.', 'boul ', 'bld', 'street', 'road', ' coin', 'rsection']):
+                        # one of these word appears in the 15 chars before the entity name
+                        selected_entity = 'street'
+                        disambiguated = True
+
                 # DISAMBIGUATION - QUARTIER
                 if not disambiguated:
-                    if entity['entity_linking']['quartier']['confidence'] > 0.80:
-                        if any(keyword in message.text[:entity['start']] for keyword in ['quartier', 'arrondissement']):
+                    if entity['entity_linking']['quartier']['confidence'] > 0.60:
+                        if any(keyword in text_15_chars_before for keyword in ['quartier', 'dissement']):  # dissement -> arrondissement
                             # some keywords confirm that we are talking of a quartier of Montreal.
                             # ex: <Rosemont> guess as <Rougemont> city but is a quartier: "bornes dans le quartier Rosemont"
                             selected_entity = 'quartier'
@@ -263,8 +272,8 @@ class CityMetro(Component):
 
                 # DISAMBIGUATION - CITY
                 if not disambiguated:
-                    if entity['entity_linking']['city']['confidence'] > 0.80:
-                        if any(keyword in message.text[:entity['start']] for keyword in ['ville', 'village', 'vill']):
+                    if entity['entity_linking']['city']['confidence'] > 0.60:
+                        if any(keyword in text_15_chars_before for keyword in ['ville', 'village']):
                             # some keywords confirm that we are talking of a quartier of Montreal.
                             # ex: <Longueuil> as the metro but is a city: "bornes dans la ville de Longueuil"
                             selected_entity = 'city'
@@ -281,10 +290,13 @@ class CityMetro(Component):
                     elif entity['entity_linking']['quartier']['confidence'] > 0.95:
                         selected_entity = 'quartier'
                         disambiguated = True
+                    elif entity['entity_linking']['street']['confidence'] > 0.95:
+                        selected_entity = 'quartier'
+                        disambiguated = True
 
                 # apply the entity found by entity linking model
                 if entity['entity'] != selected_entity:
-                    logger.info(f"*** CRFEntityExtractor decision changed ***")
+                    logger.info(f"*** CRFEntityExtractor decision changed from {entity['entity']} to {selected_entity} ***")
                     entity['old_entity'] = entity['entity']
                     entity['old_confidence'] = entity['confidence']
 

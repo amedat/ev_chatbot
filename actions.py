@@ -83,7 +83,15 @@ class ActionChargingPointPlace(Action):
                        RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
                       streetName1=street_1, streetName2=street_2).data()
 
-        dispatcher.utter_message(f"Il y a {r[0]['chargingPointCount']} bornes dans {r[0]['chargingParkCount']} emplacements près de l'intersection {street_1} et {street_2}.")
+        if r[0]['chargingPointCount'] == 0:
+            msg = f"Malheureusement, il n'y a aucune borne près de l'intersection {street_1} et {street_2}."
+        else:
+            if r[0]['chargingParkCount'] > 1:
+                msg = f"Il y a {r[0]['chargingPointCount']} bornes dans {r[0]['chargingParkCount']} emplacements près de l'intersection {street_1} et {street_2}."
+            else:
+                msg = f"Il y a {r[0]['chargingPointCount']} bornes près de l'intersection {street_1} et {street_2}."
+        dispatcher.utter_message(msg)
+
         return [SlotSet("found_charging_point", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
 
     def run(self, dispatcher: CollectingDispatcher,
