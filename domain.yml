@@ -22,7 +22,7 @@ slots:
     type: text
   street:
     type: text
-  found_charging_point:
+  found_charging_points:
     type: text
 templates:
   utter_greet:

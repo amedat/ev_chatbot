@@ -102,7 +102,7 @@ class ActionChargingPointPlace(Action):
                                   f"Il y a {point_count} bornes près de la rue {value}.",
                                   f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
 
-        return [SlotSet("found_charging_point", point_count if point_count > 0 else None)]
+        return [SlotSet("found_charging_points", point_count if point_count > 0 else None)]
 
     def two_streets_charging_point(self, dispatcher, place_entities):
         graph = Graph(password='abcd')
@@ -124,7 +124,7 @@ class ActionChargingPointPlace(Action):
                 msg = f"Il y a {r[0]['chargingPointCount']} bornes près de l'intersection {street_1} et {street_2}."
         dispatcher.utter_message(msg)
 
-        return [SlotSet("found_charging_point", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
+        return [SlotSet("found_charging_points", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
 
     def one_street_quartier_charging_point(self, dispatcher, place_entities):
         graph = Graph(password='abcd')
@@ -146,7 +146,7 @@ class ActionChargingPointPlace(Action):
                 msg = f"Il y a {r[0]['chargingPointCount']} bornes près de {street_name} dans le quartier {quartier_name}."
         dispatcher.utter_message(msg)
 
-        return [SlotSet("found_charging_point", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
+        return [SlotSet("found_charging_points", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
