@@ -24,6 +24,10 @@ slots:
     type: text
   found_charging_points:
     type: text
+  found_some_charging_points:
+    type: text
+  found_many_charging_points:
+    type: text
 templates:
   utter_greet:
   - text: Allo! Comment ça va?

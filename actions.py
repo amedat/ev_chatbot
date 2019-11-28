@@ -61,6 +61,10 @@ class ActionChargingPointPlace(Action):
         return sorted(place_entities, key=lambda k: k['entity'])
 
     def dispatch_message(self, dispatcher, point_count, park_count, msg_none, msg_many_one, msg_many_many):
+        """
+        dispatch a custom message based on the number of charging park and charging points and
+        returns the SlotSet list
+        """
         if point_count == 0:
             msg = msg_none
         else:
@@ -70,41 +74,71 @@ class ActionChargingPointPlace(Action):
                 msg = msg_many_one
         dispatcher.utter_message(msg)
 
+        if park_count == 0:
+            return [SlotSet("found_charging_points", None),
+                    SlotSet("found_some_charging_points", None),
+                    SlotSet("found_many_charging_points", None)]
+
+        if park_count == 1:
+            return [SlotSet("found_charging_points", point_count),
+                    SlotSet("found_some_charging_points", None),
+                    SlotSet("found_many_charging_points", None)]
+
+        if park_count <= 5:
+            return [SlotSet("found_charging_points", None),
+                    SlotSet("found_some_charging_points", point_count),
+                    SlotSet("found_many_charging_points", None)]
+
+        return [SlotSet("found_charging_points", None),
+                SlotSet("found_some_charging_points", None),
+                SlotSet("found_many_charging_points", point_count)]
+
     def single_entity(self, dispatcher, type, value):
-        point_count = 0
+        """
+        Bornes à Montréal
+        Bornes près du métro Berri
+        Bornes dans le quartier Rosemont
+        Bornes sur la rue Saint-Laurent
+        """
+        slots = []
         graph = Graph(password='abcd')
 
         if type == 'city':
             point_count, park_count = self.count_charging_point_in_city(graph, value)
 
-            self.dispatch_message(dispatcher, point_count, park_count,
-                                  f"Malheureusement, il n'y a aucune borne à {value}.",
-                                  f"Il y a {point_count} bornes à {value}.",
-                                  f"Il y a {point_count} bornes dans {park_count} emplacements à {value}.")
+            slots = self.dispatch_message(
+                            dispatcher, point_count, park_count,
+                            f"Malheureusement, il n'y a aucune borne à {value}.",
+                            f"Il y a {point_count} bornes à {value}.",
+                            f"Il y a {point_count} bornes dans {park_count} emplacements à {value}.")
 
         elif type == 'metro':
             count = self.count_charging_point_near_metro(graph, value)
-            dispatcher.utter_message(f"Il y a {count} emplacements à moins de 500m du métro {value}.")
+            slots = dispatcher.utter_message(f"Il y a {count} emplacements à moins de 500m du métro {value}.")
 
         elif type == 'quartier':
             point_count, park_count = self.count_charging_point_in_quartier(graph, value)
 
-            self.dispatch_message(dispatcher, point_count, park_count,
-                                  f"Malheureusement, il n'y a aucune borne dans le quartier {value}.",
-                                  f"Il y a {point_count} bornes dans le quartier {value}.",
-                                  f"Il y a {point_count} bornes dans {park_count} emplacements dans le quartier {value}.")
+            slots = self.dispatch_message(
+                            dispatcher, point_count, park_count,
+                            f"Malheureusement, il n'y a aucune borne dans le quartier {value}.",
+                            f"Il y a {point_count} bornes dans le quartier {value}.",
+                            f"Il y a {point_count} bornes dans {park_count} emplacements dans le quartier {value}.")
 
         elif type == 'street':
             point_count, park_count = self.count_charging_point_street(graph, value)
 
-            self.dispatch_message(dispatcher, point_count, park_count,
-                                  f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
-                                  f"Il y a {point_count} bornes près de la rue {value}.",
-                                  f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
+            slots = self.dispatch_message(
+                            dispatcher, point_count, park_count,
+                            f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
+                            f"Il y a {point_count} bornes près de la rue {value}.",
+                            f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
 
-        return [SlotSet("found_charging_points", point_count if point_count > 0 else None)]
+        return slots
 
     def two_streets_charging_point(self, dispatcher, place_entities):
+        """ Bornes au coin du boulevard Saint-Laurent et Sainte-Catherine """
+
         graph = Graph(password='abcd')
 
         street_1 = place_entities[0]['value']
@@ -115,18 +149,18 @@ class ActionChargingPointPlace(Action):
                        RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
                       streetName1=street_1, streetName2=street_2).data()
 
-        if r[0]['chargingPointCount'] == 0:
-            msg = f"Malheureusement, il n'y a aucune borne près de l'intersection {street_1} et {street_2}."
-        else:
-            if r[0]['chargingParkCount'] > 1:
-                msg = f"Il y a {r[0]['chargingPointCount']} bornes dans {r[0]['chargingParkCount']} emplacements près de l'intersection {street_1} et {street_2}."
-            else:
-                msg = f"Il y a {r[0]['chargingPointCount']} bornes près de l'intersection {street_1} et {street_2}."
-        dispatcher.utter_message(msg)
-
-        return [SlotSet("found_charging_points", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
+        park_count = r[0]['chargingParkCount']
+        point_count = r[0]['chargingPointCount']
+        slots = self.dispatch_message(
+                        dispatcher, point_count, park_count,
+                        f"Malheureusement, il n'y a aucune borne près de l'intersection {street_1} et {street_2}.",
+                        f"Il y a {point_count} bornes près de l'intersection {street_1} et {street_2}.",
+                        f"Il y a {point_count} bornes dans {park_count} emplacements près de l'intersection {street_1} et {street_2}.")
+        return slots
 
     def one_street_quartier_charging_point(self, dispatcher, place_entities):
+        """ Bornes sur le boulevard Saint-Laurent dans le quartier Rosemont """
+
         graph = Graph(password='abcd')
 
         quartier_name = [e for e in place_entities if e['entity'] == 'quartier'][0]['value']
@@ -137,16 +171,14 @@ class ActionChargingPointPlace(Action):
                        RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
                       streetName=street_name, quartierName=quartier_name).data()
 
-        if r[0]['chargingPointCount'] == 0:
-            msg = f"Malheureusement, il n'y a aucune borne près {street_name} dans le quartier {quartier_name}."
-        else:
-            if r[0]['chargingParkCount'] > 1:
-                msg = f"Il y a {r[0]['chargingPointCount']} bornes dans {r[0]['chargingParkCount']} emplacements près de {street_name} dans le quartier {quartier_name}."
-            else:
-                msg = f"Il y a {r[0]['chargingPointCount']} bornes près de {street_name} dans le quartier {quartier_name}."
-        dispatcher.utter_message(msg)
-
-        return [SlotSet("found_charging_points", r[0]['chargingPointCount'] if r[0]['chargingPointCount'] > 0 else None)]
+        park_count = r[0]['chargingParkCount']
+        point_count = r[0]['chargingPointCount']
+        slots = self.dispatch_message(
+                        dispatcher, point_count, park_count,
+                        f"Malheureusement, il n'y a aucune borne près {street_name} dans le quartier {quartier_name}.",
+                        f"Il y a {point_count} bornes près de {street_name} dans le quartier {quartier_name}.",
+                        f"Il y a {point_count} bornes dans {park_count} emplacements près de {street_name} dans le quartier {quartier_name}.")
+        return slots
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
