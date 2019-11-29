@@ -51,10 +51,11 @@ class ActionChargingPointPlace(Action):
                        (i:Intersection)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
                        MATCH (q:QuartierMontreal)<-[:IN]-(i) \
                        RETURN count(distinct park) AS chargingParkCount, count(distinct point) AS chargingPointCount, \
-                              c.name AS cityName, collect(distinct q.name) AS quartierNames",
+                              c.name AS cityName, collect(distinct q.name) AS quartierNames, \
+                              collect(distinct park.name) AS parkNames",
                        streetName=street_name).data()
 
-        return q[0]['chargingPointCount'], q[0]['chargingParkCount'], q[0]['cityName'], q[0]['quartierNames']
+        return q[0]['chargingPointCount'], q[0]['chargingParkCount'], q[0]['cityName'], q[0]['quartierNames'], q[0]['parkNames']
 
     def is_entity_in_list(self, type, value, place_entities):
         """ Returns True if the type and value specified exists in the entity list. """
@@ -80,7 +81,8 @@ class ActionChargingPointPlace(Action):
 
         return sorted(place_entities, key=lambda k: k['entity'])
 
-    def dispatch_message(self, dispatcher, point_count, park_count, msg_none, msg_many_one, msg_many_many):
+    def dispatch_message(self, dispatcher, point_count, park_count, park_names,
+                         msg_none, msg_many_one, msg_many_many):
         """
         dispatch a custom message based on the number of charging park and charging points and
         returns the SlotSet list
@@ -100,7 +102,7 @@ class ActionChargingPointPlace(Action):
                     SlotSet("found_many_charging_points", None)]
 
         if park_count == 1:
-            return [SlotSet("found_charging_points", point_count),
+            return [SlotSet("found_charging_points", park_names),
                     SlotSet("found_some_charging_points", None),
                     SlotSet("found_many_charging_points", None)]
 
@@ -126,7 +128,7 @@ class ActionChargingPointPlace(Action):
             point_count, park_count = self.count_charging_point_in_city(value)
 
             slots = self.dispatch_message(
-                            dispatcher, point_count, park_count,
+                            dispatcher, point_count, park_count, None,
                             f"Malheureusement, il n'y a aucune borne à {value}.",
                             f"Il y a {point_count} bornes à {value}.",
                             f"Il y a {point_count} bornes dans {park_count} emplacements à {value}.")
@@ -147,7 +149,7 @@ class ActionChargingPointPlace(Action):
             point_count, park_count, city_name = self.count_charging_point_in_quartier(value)
 
             slots = self.dispatch_message(
-                            dispatcher, point_count, park_count,
+                            dispatcher, point_count, park_count, None,
                             f"Malheureusement, il n'y a aucune borne dans le quartier {value}.",
                             f"Il y a {point_count} bornes dans le quartier {value}.",
                             f"Il y a {point_count} bornes dans {park_count} emplacements dans le quartier {value}.")
@@ -157,10 +159,10 @@ class ActionChargingPointPlace(Action):
             slots.append(SlotSet("street", None))
 
         elif type == 'street':
-            point_count, park_count, city_name, quartier_names = self.count_charging_point_street(value)
+            point_count, park_count, city_name, quartier_names, park_names = self.count_charging_point_street(value)
 
             slots = self.dispatch_message(
-                            dispatcher, point_count, park_count,
+                            dispatcher, point_count, park_count, park_names,
                             f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
                             f"Il y a {point_count} bornes près de la rue {value}.",
                             f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
@@ -183,13 +185,13 @@ class ActionChargingPointPlace(Action):
                  MATCH (q:QuartierMontreal)<-[:IN]-(i) \
                  MATCH (q)-[:QUARTIER_OF]->(c:City) \
                  RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount, \
-                        q.name AS quartierName, c.name AS cityName",
+                        q.name AS quartierName, c.name AS cityName, collect(distinct park.name) AS parkNames",
                  streetName1=street_1, streetName2=street_2).data()
 
         park_count = r[0]['chargingParkCount']
         point_count = r[0]['chargingPointCount']
         slots = self.dispatch_message(
-                        dispatcher, point_count, park_count,
+                        dispatcher, point_count, park_count, r[0]['parkNames'],
                         f"Malheureusement, il n'y a aucune borne près de l'intersection {street_1} et {street_2}.",
                         f"Il y a {point_count} bornes près de l'intersection {street_1} et {street_2}.",
                         f"Il y a {point_count} bornes dans {park_count} emplacements près de l'intersection {street_1} et {street_2}.")
@@ -211,13 +213,14 @@ class ActionChargingPointPlace(Action):
         r = self.graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(i:Intersection)-[:IN]->(q:QuartierMontreal {name:{quartierName}}) \
                        MATCH (i)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
                        MATCH (q)-[:QUARTIER_OF]->(c:City) \
-                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount, c.name AS cityName",
+                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount, \
+                              c.name AS cityName, collect(distinct park.name) AS parkNames",
                       streetName=street_name, quartierName=quartier_name).data()
 
         park_count = r[0]['chargingParkCount']
         point_count = r[0]['chargingPointCount']
         slots = self.dispatch_message(
-                        dispatcher, point_count, park_count,
+                        dispatcher, point_count, park_count, r[0]['parkNames'],
                         f"Malheureusement, il n'y a aucune borne près {street_name} dans le quartier {quartier_name}.",
                         f"Il y a {point_count} bornes près de {street_name} dans le quartier {quartier_name}.",
                         f"Il y a {point_count} bornes dans {park_count} emplacements près de {street_name} dans le quartier {quartier_name}.")
@@ -284,3 +287,56 @@ class ActionRectifyQuartierMetro(Action):
         metro_name = tracker.get_slot('metro')
         quartier_name = tracker.get_slot('quartier')
         return [SlotSet("quartier", metro_name), SlotSet("metro", quartier_name)]
+
+
+class ActionPresentChargingParks(Action):
+
+    def __init__(self):
+        super(ActionPresentChargingParks, self).__init__()
+
+        self.graph = Graph(password='abcd')
+        logger.info(f"({self.name()}) Connected to Neo4J Graph")
+
+    def name(self):
+        return "action_present_charging_parks"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        found_charging_points = tracker.get_slot('found_charging_points')
+
+        if len(found_charging_points) > 0:
+            address, intersection_name, distance_m = self.get_charging_park_info(found_charging_points[0])
+
+            multiple_of_50 = int(distance_m / 50)
+            dist_str = "à moins de 50 mètres de l'intersection" if multiple_of_50 == 1 else f"à environ de {multiple_of_50 * 50} mètres de l'intersection"
+
+            dispatcher.utter_message(
+                f"La borne est située au {address}, {dist_str} {intersection_name.replace('/',' et ')}.")
+        else:
+            logger.error("found_charging_points slot is empty")
+
+        return []
+
+    def get_charging_park_info(self, charging_park_name):
+        # return nearest intersection (sorted by distance) to the specified charging park location
+        r = self.graph.run(
+            "MATCH (i:Intersection)<-[:NEARBY]-(park:ChargingPark {name:{parkName}})<-[:IN]-(point:ChargingPoint) \
+             WITH i, park, distance(i.location, park.location) AS dist \
+             RETURN park.streetAddress AS address, i.name AS intersectionName, dist ORDER BY dist ASC LIMIT 10",
+             parkName=charging_park_name).data()
+
+        return r[0]['address'], r[0]['intersectionName'], r[0]['dist']
+
+class ActionSendChargingParks(Action):
+
+    def name(self):
+        return "action_send_charging_parks"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message("Les informations sur la borne de recharge ont été envoyées!")
+        return []

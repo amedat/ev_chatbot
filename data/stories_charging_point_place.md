@@ -119,7 +119,7 @@
   - slot{"street": null}
   - slot{"metro": null}
 
-## STREET - charging point, one street
+## STREET - charging point, one street - many found
 * ask_charging_point_place{"street":"saint-laurent"}
   - slot{"street":"Saint-Laurent"}
   - action_charging_point_place
@@ -130,7 +130,37 @@
   - slot{"quartier": ["Le Plateau", "Centre-Ville", "Vieux-Montréal", "Villeray", "Ahuntsic", "Petite-Patrie"]}
   - slot{"metro": null}
 
-## STREET - charging point, two streets
+## STREET - charging point, one street - one found - send sms
+* ask_charging_point_place{"street":"berlioz"}
+  - slot{"street":"Berlioz"}
+  - action_charging_point_place
+  - slot{"found_many_charging_points": null}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * affirm
+  - action_send_charging_parks
+
+## STREET - charging point, one street - one found - do not send sms
+* ask_charging_point_place{"street":"berlioz"}
+  - slot{"street":"Berlioz"}
+  - action_charging_point_place
+  - slot{"found_many_charging_points": null}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * deny
+  - utter_ok_no_problem
+
+## STREET - charging point, two streets - many found
 * ask_charging_point_place{"street":"saint-laurent", "street":"sainte-catherine"}
   - slot{"street":"Saint-Laurent"}
   - action_charging_point_place
@@ -142,7 +172,37 @@
   - slot{"street":["Saint-Laurent", "Sainte-Catherine"]}
   - slot{"metro": null}
 
-## STREET - charging point, one street + quartier
+## STREET - charging point, two streets - one found - send sms
+* ask_charging_point_place{"street":"berlioz", "street":"ile des soeurs"}
+  - slot{"street":"Berlioz"}
+  - action_charging_point_place
+  - slot{"found_some_charging_points": null}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * affirm
+  - action_send_charging_parks
+
+## STREET - charging point, two streets - one found - do not send sms
+* ask_charging_point_place{"street":"berlioz", "street":"ile des soeurs"}
+  - slot{"street":"Berlioz"}
+  - action_charging_point_place
+  - slot{"found_some_charging_points": null}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * deny
+  - utter_ok_no_problem
+
+## STREET - charging point, one street + quartier - many found
 * ask_charging_point_place{"street":"saint-laurent", "quartier":"centre-ville"}
   - slot{"street":"Saint-Laurent"}
   - slot{"quartier":"Centre-Ville"}
@@ -152,6 +212,38 @@
   - slot{"found_charging_points": null}
   - slot{"city": "Montréal"}
   - slot{"metro": null}
+
+## STREET - charging point, one street + quartier - one found - send sms
+* ask_charging_point_place{"street":"Berlioz", "quartier":"Ile-des-soeurs"}
+  - slot{"street":"Berlioz"}
+  - slot{"quartier":"Ile-des-soeurs"}
+  - action_charging_point_place
+  - slot{"found_some_charging_points": null}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * affirm
+  - action_send_charging_parks
+
+## STREET - charging point, one street + quartier - one found - do not send sms
+* ask_charging_point_place{"street":"Berlioz", "quartier":"Ile-des-soeurs"}
+  - slot{"street":"Berlioz"}
+  - slot{"quartier":"Ile-des-soeurs"}
+  - action_charging_point_place
+  - slot{"found_some_charging_points": null}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * deny
+  - utter_ok_no_problem
 
 
 ## CITY - charging point + greet

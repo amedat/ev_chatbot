@@ -55,8 +55,8 @@
 ## ----- QUARTIER DISAMBIGUATION -----
 
 ## quartier
-* ask_charging_point_place: bornes à [rosemont](quartier:Rosemont) 
-  - action_charging_point_place
+##* ask_charging_point_place: bornes à [rosemont](quartier:Rosemont) 
+##  - action_charging_point_place
 
 ## quartier
 * ask_charging_point_place: bornes dans [rosemont](quartier:Rosemont) 
@@ -96,11 +96,59 @@
   - slot{"quartier": "Côte-des-Neiges"}
   - action_charging_point_place 
 
+## ----- STREETS -----
 
 ## two streets intersection: bornes au coin du boulevard Saint-Laurent et Sainte-Catherine
 * ask_charging_point_place: bornes au coin du boulevard [Saint-Laurent](street) et [Sainte-Catherine](street)
   - action_charging_point_place
 
-## bornes sur le boulevard saint-laurent dans le quartier centre-ville
+## one street + quartier: bornes sur le boulevard saint-laurent dans le quartier centre-ville
 * ask_charging_point_place: bornes sur le boulevard [Saint-Laurent](street) dans le quartier [Centre-Ville](quartier)
   - action_charging_point_place
+
+## one street only - only a charging station nearby: bornes sur la rue Berlioz
+* ask_charging_point_place: bornes sur la rue [Berlioz](street)
+  - slot{"street":"Berlioz"}
+  - action_charging_point_place
+  - slot{"found_many_charging_points": null}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * affirm: oui
+  - action_send_charging_parks
+
+## one street + quartier - only a charging station nearby: bornes sur la rue Berlioz dans le quartier Ile-des-soeurs
+* ask_charging_point_place: bornes sur la rue [Berlioz](street) dans le quartier [Ile-des-soeurs](quartier)
+  - slot{"street":"Berlioz"}
+  - slot{"quartier":"Ile-des-soeurs"}
+  - action_charging_point_place
+  - slot{"found_many_charging_points": null}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * deny: non
+  - utter_ok_no_problem
+
+## two streets intersection - only a charging station nearby
+* ask_charging_point_place: bornes au coin du rue [Berlioz](street) et boulevard [Ile des Soeurs](street)
+  - slot{"quartier": ["Berlioz", "Ile des Soeurs"]}
+  - action_charging_point_place
+  - slot{"found_many_charging_points": null}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Ile-des-soeurs"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * deny: non
+  - utter_ok_no_problem
+

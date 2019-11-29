@@ -29,23 +29,31 @@ slots:
   found_many_charging_points:
     type: text
 templates:
+  utter_prompt_send_charging_parks:
+  - text: "Voulez-vous que je vous envoi l'information par sms?"
+  utter_ok_no_problem:
+  - text: "D'accord, pas de problème!"
   utter_greet:
-  - text: Allo! Comment ça va?
+  - text: "Allo! Comment ça va?"
   utter_cheer_up:
   - text: "Voici quelque chose pour t'aider:"
     image: https://i.imgur.com/nGF1K8f.jpg
   utter_did_that_help:
-  - text: Est-ce que ça t'as aidé?
+  - text: "Est-ce que ça t'as aidé?"
   utter_happy:
-  - text: Super, continue comme ça!
+  - text: "Super, continue comme ça!"
   utter_goodbye:
-  - text: À la prochaine
+  - text: "À la prochaine"
 actions:
 - utter_greet
 - utter_cheer_up
 - utter_did_that_help
 - utter_happy
 - utter_goodbye
+- utter_ok_no_problem
+- utter_prompt_send_charging_parks
 - action_charging_point_place
 - action_rectify_city_metro
 - action_rectify_quartier_metro
+- action_present_charging_parks
+- action_send_charging_parks
