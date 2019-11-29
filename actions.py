@@ -27,24 +27,34 @@ class ActionChargingPointPlace(Action):
                        cityName=city_name).data()
         return r[0]['chargingPointCount'], r[0]['chargingParkCount']
 
-    def count_charging_point_near_metro(self, metro_name):
-        # Charging parks at less than 500m of Pie-IX metro station
-        return self.graph.run(
-            "MATCH (:MetroStation {name:{metroName}})-[n:NEARBY]-(p:ChargingPark) WHERE n.distance_km < 0.5 RETURN count(p)",
-            metroName=metro_name).evaluate()
+    def count_charging_park_near_metro(self, metro_name):
+        """ Charging parks at less than 500m of Pie-IX metro station """
+        r = self.graph.run(
+            "MATCH (c:City {name:'Montréal'})<-[:IN]-(:MetroStation {name:{metroName}})-[n:NEARBY]-(p:ChargingPark) \
+             WHERE n.distance_km < 0.5 RETURN count(p) AS chargingParkCount, c.name AS cityName",
+            metroName=metro_name).data()
+
+        return r[0]['chargingParkCount'], r[0]['cityName']
 
     def count_charging_point_in_quartier(self, quartier_name):
-        r = self.graph.run("MATCH (:QuartierMontreal {name:{quartierName}})<-[:IN]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
-                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
-                       quartierName=quartier_name).data()
-        return r[0]['chargingPointCount'], r[0]['chargingParkCount']
+        r = self.graph.run(
+            "MATCH (q:QuartierMontreal {name:{quartierName}})<-[:IN]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+             MATCH (q)-[:QUARTIER_OF]->(c:City) \
+             RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount, c.name AS cityName",
+            quartierName=quartier_name).data()
+        return r[0]['chargingPointCount'], r[0]['chargingParkCount'], r[0]['cityName']
 
     def count_charging_point_street(self, street_name):
-        r = self.graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(:Intersection) \
-                       <-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
-                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
+        # number of charging parks and charging points near an intersection crossed by a specific street
+        # quartier list of those intersections
+        q = self.graph.run("MATCH (c:City {name:'Montréal'})<-[:IN]-(:Street {name:{streetName}})-[:CROSS]-> \
+                       (i:Intersection)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+                       MATCH (q:QuartierMontreal)<-[:IN]-(i) \
+                       RETURN count(distinct park) AS chargingParkCount, count(distinct point) AS chargingPointCount, \
+                              c.name AS cityName, collect(distinct q.name) AS quartierNames",
                        streetName=street_name).data()
-        return r[0]['chargingPointCount'], r[0]['chargingParkCount']
+
+        return q[0]['chargingPointCount'], q[0]['chargingParkCount'], q[0]['cityName'], q[0]['quartierNames']
 
     def is_entity_in_list(self, type, value, place_entities):
         """ Returns True if the type and value specified exists in the entity list. """
@@ -121,12 +131,20 @@ class ActionChargingPointPlace(Action):
                             f"Il y a {point_count} bornes à {value}.",
                             f"Il y a {point_count} bornes dans {park_count} emplacements à {value}.")
 
+            slots.append(SlotSet("metro", None))
+            slots.append(SlotSet("street", None))
+            slots.append(SlotSet("quartier", None))
+
         elif type == 'metro':
-            count = self.count_charging_point_near_metro(value)
-            slots = dispatcher.utter_message(f"Il y a {count} emplacements à moins de 500m du métro {value}.")
+            park_count, city_name = self.count_charging_park_near_metro(value)
+            dispatcher.utter_message(f"Il y a {park_count} emplacements à moins de 500m du métro {value}.")
+
+            slots.append(SlotSet("city", city_name))
+            slots.append(SlotSet("quartier", None))
+            slots.append(SlotSet("street", None))
 
         elif type == 'quartier':
-            point_count, park_count = self.count_charging_point_in_quartier(value)
+            point_count, park_count, city_name = self.count_charging_point_in_quartier(value)
 
             slots = self.dispatch_message(
                             dispatcher, point_count, park_count,
@@ -134,14 +152,22 @@ class ActionChargingPointPlace(Action):
                             f"Il y a {point_count} bornes dans le quartier {value}.",
                             f"Il y a {point_count} bornes dans {park_count} emplacements dans le quartier {value}.")
 
+            slots.append(SlotSet("city", city_name))
+            slots.append(SlotSet("metro", None))
+            slots.append(SlotSet("street", None))
+
         elif type == 'street':
-            point_count, park_count = self.count_charging_point_street(value)
+            point_count, park_count, city_name, quartier_names = self.count_charging_point_street(value)
 
             slots = self.dispatch_message(
                             dispatcher, point_count, park_count,
                             f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
                             f"Il y a {point_count} bornes près de la rue {value}.",
                             f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
+
+            slots.append(SlotSet("city", city_name))
+            slots.append(SlotSet("quartier", quartier_names))
+            slots.append(SlotSet("metro", None))
 
         return slots
 
@@ -151,10 +177,14 @@ class ActionChargingPointPlace(Action):
         street_1 = place_entities[0]['value']
         street_2 = place_entities[1]['value']
 
-        r = self.graph.run("MATCH (:Street {name:{streetName1}})-[:CROSS]->(i:Intersection)<-[:CROSS]-(:Street {name:{streetName2}}) \
-                       MATCH (i)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
-                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
-                      streetName1=street_1, streetName2=street_2).data()
+        r = self.graph.run(
+                "MATCH (:Street {name:{streetName1}})-[:CROSS]->(i:Intersection)<-[:CROSS]-(:Street {name:{streetName2}}) \
+                 MATCH (i)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
+                 MATCH (q:QuartierMontreal)<-[:IN]-(i) \
+                 MATCH (q)-[:QUARTIER_OF]->(c:City) \
+                 RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount, \
+                        q.name AS quartierName, c.name AS cityName",
+                 streetName1=street_1, streetName2=street_2).data()
 
         park_count = r[0]['chargingParkCount']
         point_count = r[0]['chargingPointCount']
@@ -163,6 +193,13 @@ class ActionChargingPointPlace(Action):
                         f"Malheureusement, il n'y a aucune borne près de l'intersection {street_1} et {street_2}.",
                         f"Il y a {point_count} bornes près de l'intersection {street_1} et {street_2}.",
                         f"Il y a {point_count} bornes dans {park_count} emplacements près de l'intersection {street_1} et {street_2}.")
+
+        slots.append(SlotSet("street", [street_1, street_2]))
+
+        slots.append(SlotSet("city", r[0]['cityName']))
+        slots.append(SlotSet("quartier", r[0]['quartierName']))
+        slots.append(SlotSet("metro", None))
+
         return slots
 
     def one_street_quartier_charging_point(self, dispatcher, place_entities):
@@ -171,9 +208,10 @@ class ActionChargingPointPlace(Action):
         quartier_name = [e for e in place_entities if e['entity'] == 'quartier'][0]['value']
         street_name = [e for e in place_entities if e['entity'] == 'street'][0]['value']
 
-        r = self.graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(i:Intersection)-[:IN]->(:QuartierMontreal {name:{quartierName}}) \
+        r = self.graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(i:Intersection)-[:IN]->(q:QuartierMontreal {name:{quartierName}}) \
                        MATCH (i)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
-                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount",
+                       MATCH (q)-[:QUARTIER_OF]->(c:City) \
+                       RETURN count(distinct park) as chargingParkCount, count(distinct point) as chargingPointCount, c.name AS cityName",
                       streetName=street_name, quartierName=quartier_name).data()
 
         park_count = r[0]['chargingParkCount']
@@ -183,6 +221,10 @@ class ActionChargingPointPlace(Action):
                         f"Malheureusement, il n'y a aucune borne près {street_name} dans le quartier {quartier_name}.",
                         f"Il y a {point_count} bornes près de {street_name} dans le quartier {quartier_name}.",
                         f"Il y a {point_count} bornes dans {park_count} emplacements près de {street_name} dans le quartier {quartier_name}.")
+
+        slots.append(SlotSet("city", r[0]['cityName']))
+        slots.append(SlotSet("metro", None))
+
         return slots
 
     def run(self, dispatcher: CollectingDispatcher,
