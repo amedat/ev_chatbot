@@ -57,6 +57,24 @@ class ActionChargingPointPlace(Action):
 
         return q[0]['chargingPointCount'], q[0]['chargingParkCount'], q[0]['cityName'], q[0]['quartierNames'], q[0]['parkNames']
 
+    def is_street_in_city(self, street_name, city_name):
+        q = self.graph.run("MATCH (s:Street {name:{streetName}})-[:IN]->(c:City {name:{cityName}}) \
+                            RETURN count(s)",
+                           streetName=street_name, cityName=city_name).evaluate()
+        return q > 0
+
+    def is_street_in_quartier(self, street_name, quartier_name):
+        q = self.graph.run("MATCH (s:Street {name:{streetName}})-[:CROSS]->(:Intersection)-[:IN]-> \
+                            (q:QuartierMontreal {name:{quartierName}}) RETURN count(s)",
+                           streetName=street_name, quartierName=quartier_name).evaluate()
+        return q > 0
+
+    def is_quartier_of_city(self, quartier_name, city_name):
+        q = self.graph.run("MATCH (q:QuartierMontreal {name:{quartierName}})-[:QUARTIER_OF]->(c:City {name:{cityName}}) \
+                            RETURN count(q)",
+                           quartierName=quartier_name, cityName=city_name).evaluate()
+        return q > 0
+
     def is_entity_in_list(self, type, value, place_entities):
         """ Returns True if the type and value specified exists in the entity list. """
         found = next((e for e in place_entities if (e["entity"] == type and e['value'] == value)), None)
@@ -67,17 +85,47 @@ class ActionChargingPointPlace(Action):
 
     def get_sorted_place_entities(self, tracker):
         """ Return a sorted list by type of place entities from latest message and/or slots. """
+        place_entities = []
 
         # extract places entities from latest message
-        place_entities = [e for e in tracker.latest_message.get('entities')
-                          if e['entity'] in ['city', 'metro', 'quartier', 'street']]
+        # ex: msg_entities = [{'value': 'Centre-Ville', 'entity': 'quartier'}, {'value': 'Saint-Laurent', 'entity': 'street'}]
+        msg_entities = [e for e in tracker.latest_message.get('entities')
+                        if e['entity'] in ['city', 'metro', 'quartier', 'street']]
+        msg_entities = sorted(msg_entities, key=lambda k: k['entity'])
 
-        if not place_entities:
-            # add other places from slots
-            for type in ['city', 'metro', 'quartier', 'street']:
-                value = tracker.get_slot(type)
-                if value and not self.is_entity_in_list(type, value, place_entities):
-                    place_entities.append({'value': value, 'entity': type})
+        # ['quartier', 'street']
+        msg_entities_type = [e['entity'] for e in msg_entities]
+
+        # extract places from slots
+        # ex: slots_entities = [{'value': 'Montréal', 'entity': 'city'}]
+        slots_entities = []
+        for type in ['city', 'metro', 'quartier', 'street']:
+            value = tracker.get_slot(type)
+            if value and not self.is_entity_in_list(type, value, place_entities):
+                slots_entities.append({'value': value, 'entity': type})
+
+        # parse current slots and keep only those that are still valid
+        if ['quartier'] == msg_entities_type:
+            quartier_name = msg_entities[0]['value']
+            for slot in slots_entities:
+                if 'city' == slot['entity']:
+                    if self.is_quartier_of_city(quartier_name, slot['value']):
+                        place_entities.append(slot)
+                elif 'street' == slot['entity']:
+                    if self.is_street_in_quartier(slot['value'], quartier_name):
+                        place_entities.append(slot)
+
+        if ['city'] == msg_entities_type:
+            city_name = msg_entities[0]['value']
+            for slot in slots_entities:
+                if 'quartier' == slot['entity']:
+                    if self.is_quartier_of_city(city_name, slot['value']):
+                        place_entities.append(slot)
+                elif 'street' == slot['entity']:
+                    if self.is_street_in_city(city_name, slot['value']):
+                        place_entities.append(slot)
+
+        place_entities += msg_entities
 
         return sorted(place_entities, key=lambda k: k['entity'])
 
@@ -244,12 +292,15 @@ class ActionChargingPointPlace(Action):
             # Bornes sur la rue Saint-Laurent
             return self.single_entity(dispatcher, place_entities[0]['entity'], place_entities[0]['value'])
         
-        elif entity_count == 2:
-            if self.is_type_equal(['street', 'street'], place_entities):
+        elif entity_count >= 2:
+            if self.is_type_equal(['street', 'street'], place_entities) or \
+               self.is_type_equal(['quartier', 'street', 'street'], place_entities) or \
+               self.is_type_equal(['city', 'quartier', 'street', 'street'], place_entities):
                 # Bornes au coin du boulevard Saint-Laurent et Sainte-Catherine
                 return self.two_streets_charging_point(dispatcher, place_entities)
 
-            elif self.is_type_equal(['quartier', 'street'], place_entities):
+            elif self.is_type_equal(['quartier', 'street'], place_entities) or \
+                 self.is_type_equal(['city', 'quartier', 'street'], place_entities):
                 # Bornes sur le boulevard Saint-Laurent dans le quartier Rosemont
                 return self.one_street_quartier_charging_point(dispatcher, place_entities)
 
@@ -340,3 +391,49 @@ class ActionSendChargingParks(Action):
 
         dispatcher.utter_message("Les informations sur la borne de recharge ont été envoyées!")
         return []
+
+class ActionRequestPlacePrecision(Action):
+
+    def name(self):
+        return "action_request_place_precision"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        # extract relevant slots
+        city = tracker.get_slot('city')
+        metro = tracker.get_slot('metro')
+        streets = tracker.get_slot('street')
+        quartiers = tracker.get_slot('quartier')
+
+        # make sure street and quartier are list of string
+        if streets:
+            streets = streets if isinstance(streets, list) else streets.split(',')
+        if quartiers:
+            quartiers = quartiers if isinstance(quartiers, list) else quartiers.split(',')
+
+        case = self.select_case(city, metro, streets, quartiers)
+
+        if case == "one street and quartier list":
+            self.ask_to_choose_from_quartiers(dispatcher, quartiers)
+
+        elif case == "city only":
+            if city == "Montréal":
+                dispatcher.utter_message(f"Vous cherchez dans quel quartier ou quelles rues?")
+
+        return []
+
+    def select_case(self, city, metro, streets, quartiers):
+        if streets and quartiers:
+            if len(streets) == 1 and len(quartiers) > 1:
+                return "one street and quartier list"
+
+        if city and not quartiers and not streets:
+            return "city only"
+
+        return None
+
+    def ask_to_choose_from_quartiers(self, dispatcher, quartiers):
+        quartiers_str = ", ".join(quartiers[:-1]) + " ou " + quartiers[-1]
+        dispatcher.utter_message(f"Dans lequel des {len(quartiers)} quartiers suivant: {quartiers_str}?")

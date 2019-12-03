@@ -77,15 +77,29 @@
 * inform_rectify_city_metro: je parle de la ville pas de la station 
   - action_rectify_city_metro
   - action_charging_point_place 
+  - slot{"found_some_charging_points": 5}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": null}
 
 ## quartier rectify to metro
 * ask_charging_point_place: combien de place pour recharger dans l'arrondissement [Rosemont](quartier) 
   - slot{"quartier": "Rosemont"}
   - action_charging_point_place
 * inform_rectify_quartier_metro: non, le metro [Rosemont](metro) pas le quartier
-  - slot{"metro": "Rosemont"}
   - action_rectify_quartier_metro
+  - slot{"metro": "Rosemont"}
+  - slot{"quartier": null}
   - action_charging_point_place 
+  - slot{"found_some_charging_points": null}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Rosemont"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+* affirm
+  - action_send_charging_parks
 
 ## metro rectify to quartier
 * ask_charging_point_place: combien de bornes proche du metro [cote des neiges](metro:Côte-des-Neiges)
@@ -95,15 +109,48 @@
   - action_rectify_quartier_metro
   - slot{"quartier": "Côte-des-Neiges"}
   - action_charging_point_place 
+  - slot{"found_many_charging_points": 25}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": null}
+  - slot{"city": null}
+  - slot{"street": null}
+  - slot{"metro": null}
+  - action_request_place_precision
+* ask_charging_point_place{"street":"van horne"}
+  - slot{"street":"Van horne"}
+  - action_charging_point_place
+  - slot{"found_some_charging_points": null}
+  - slot{"found_many_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Côte-des-neiges"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+* affirm
+  - action_send_charging_parks
 
 ## ----- STREETS -----
 
 ## two streets intersection: bornes au coin du boulevard Saint-Laurent et Sainte-Catherine
 * ask_charging_point_place: bornes au coin du boulevard [Saint-Laurent](street) et [Sainte-Catherine](street)
+  - slot{"street": "Saint-Laurent"}
   - action_charging_point_place
+  - slot{"found_many_charging_points": null}
+  - slot{"found_some_charging_points": null}
+  - slot{"found_charging_points": ["1780 | BHR | VER | 201 Berlioz : La Station"]}
+  - slot{"city": "Montréal"}
+  - slot{"quartier": "Centre-Ville"}
+  - slot{"metro": null}
+  - action_present_charging_parks
+  - utter_prompt_send_charging_parks
+ * affirm: oui
+  - action_send_charging_parks
 
 ## one street + quartier: bornes sur le boulevard saint-laurent dans le quartier centre-ville
 * ask_charging_point_place: bornes sur le boulevard [Saint-Laurent](street) dans le quartier [Centre-Ville](quartier)
+  - slot{"quartier": "Centre-Ville"}
+  - slot{"street": "Saint-Laurent"}
   - action_charging_point_place
 
 ## one street only - only a charging station nearby: bornes sur la rue Berlioz

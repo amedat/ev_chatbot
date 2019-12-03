@@ -57,3 +57,4 @@ actions:
 - action_rectify_quartier_metro
 - action_present_charging_parks
 - action_send_charging_parks
+- action_request_place_precision
