@@ -3,9 +3,8 @@ intents:
 - goodbye
 - affirm
 - deny
-- mood_great
-- mood_unhappy
-- ask_charging_point_place
+- request_charging_place
+- inform
 - inform_rectify_city_metro
 - inform_rectify_quartier_metro
 entities:
@@ -15,20 +14,35 @@ entities:
 - street
 slots:
   city:
-    type: text
+    type: unfeaturized
+    auto_fill: false
   metro:
-    type: text
+    type: unfeaturized
+    auto_fill: false
   quartier:
-    type: text
+    type: unfeaturized
+    auto_fill: false
   street:
-    type: text
+    type: unfeaturized
+    auto_fill: false
   found_charging_points:
-    type: text
+    type: unfeaturized
+    auto_fill: false
   found_some_charging_points:
-    type: text
+    type: unfeaturized
+    auto_fill: false
   found_many_charging_points:
-    type: text
+    type: unfeaturized
+    auto_fill: false
 templates:
+  utter_ask_city:
+    - text: "Pour quelle ville?"
+  utter_ask_metro:
+    - text: "Pour quel métro?"
+  utter_ask_quartier:
+    - text: "Pour quel quartier?"
+  utter_ask_street:
+    - text: "Pour quelle rue ou coin de rue?"
   utter_prompt_send_charging_parks:
   - text: "Voulez-vous que je vous envoi l'information par sms?"
   utter_ok_no_problem:
@@ -46,15 +60,14 @@ templates:
   - text: "À la prochaine"
 actions:
 - utter_greet
-- utter_cheer_up
-- utter_did_that_help
-- utter_happy
 - utter_goodbye
 - utter_ok_no_problem
 - utter_prompt_send_charging_parks
-- action_charging_point_place
 - action_rectify_city_metro
 - action_rectify_quartier_metro
 - action_present_charging_parks
 - action_send_charging_parks
 - action_request_place_precision
+
+forms:
+  - charging_place_form

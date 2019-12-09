@@ -1,7 +1,7 @@
 import ./common.chatito
 import ./slots.chatito
 
-%[ask_charging_point_place]('training': '4500', 'testing': '1000')
+%[request_charging_place]('training': '4500', 'testing': '1000')
     ~[bornes] ~[à] @[city]
     ~[bonjour?] ~[où sont les] ~[bornes] ~[à] @[city]
     ~[dans la ville de] @[city] ~[où sont les] ~[bornes]
@@ -76,6 +76,7 @@ import ./slots.chatito
     y a combien de
 
 ~[à]
+    a
     à
     dans le coin de
     dans le bout de

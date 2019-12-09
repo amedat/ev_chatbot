@@ -1,0 +1,37 @@
+import ./common.chatito
+import ./slots.chatito
+
+%[inform]('training': '1000', 'testing': '100')
+    @[city]
+    a @[city]
+    à @[city]
+    ville de @[city]
+    dans la ville de @[city]
+    village de @[city]
+
+    @[metro]
+    métro @[metro]
+    au métro @[metro]
+    près du métro @[metro]
+
+    @[quartier]
+    dans @[quartier]
+    quartier @[quartier]
+    dans le quartier @[quartier]
+
+    @[street]
+    rue @[street]
+    avenue @[street]
+    boulevard @[street]
+    boul @[street]
+    bld @[street]
+    ave @[street]
+    @[street] street
+    @[street] avenue
+
+    @[street] et @[street]
+    entre @[street] et @[street]
+    rue @[street] et @[street]
+    coin de @[street] et @[street]
+    avenue @[street] et @[street]
+    boulevard @[street] et @[street]

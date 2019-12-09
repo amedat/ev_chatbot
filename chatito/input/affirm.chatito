@@ -3,10 +3,10 @@
 import ./common.chatito
 
 %[affirm]('training': '25', 'testing': '10')
-    *[20%] ~[oui]
+    ~[oui]
     ~[oui] ~[svp?]
     ~[oui] ~[merci?]
-    ~[oui?] ~[c'est bon] ~[oui?]
+    ~[oui?] ~[c'est bon]
 
 ~[oui]
     oui
@@ -14,7 +14,7 @@ import ./common.chatito
     certainement
     affirmatif
     d'accord
-    correcte
+    oui correcte
     oui monsieur
 
 ~[c'est bon]
@@ -23,7 +23,6 @@ import ./common.chatito
     c'est correcte
     c'est parfait
     c'est ça
-    je le veux
     c'est ce que veux
     t'as compris
     parfait
