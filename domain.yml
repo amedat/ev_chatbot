@@ -40,7 +40,7 @@ templates:
   utter_ask_metro:
     - text: "Pour quel métro?"
   utter_ask_quartier:
-    - text: "Pour quel quartier?"
+    - text: "Quel quartier ou coin de rue vous intéresse?"
   utter_ask_street:
     - text: "Pour quelle rue ou coin de rue?"
   utter_prompt_send_charging_parks:
@@ -67,7 +67,6 @@ actions:
 - action_rectify_quartier_metro
 - action_present_charging_parks
 - action_send_charging_parks
-- action_request_place_precision
 
 forms:
   - charging_place_form

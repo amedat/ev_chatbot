@@ -115,7 +115,6 @@
   - slot{"city": null}
   - slot{"street": null}
   - slot{"metro": null}
-  - action_request_place_precision
 * request_charging_place{"street":"van horne"}
   - slot{"street":"Van horne"}
   - action_charging_point_place

@@ -501,11 +501,27 @@ class ChargingPlaceForm(FormAction):
             else:
                 point_count, park_count, city_name, quartier_names, park_names = self.count_charging_point_street(value)
 
-                slots = self.dispatch_message(
-                                dispatcher, point_count, park_count, park_names,
-                                f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
-                                f"Il y a {point_count} bornes près de la rue {value}.",
-                                f"Il y a {point_count} bornes dans {park_count} emplacements près de la rue {value}.")
+                quartiers = quartier_names if isinstance(quartier_names, list) else quartier_names.split(',')
+
+                if len(quartiers) > 1:
+                    # utter the quartier list
+                    quartiers_str = ", ".join(quartiers[:-1]) + " et " + quartiers[-1]
+                    if len(quartiers) > 3:
+                        quartiers_str = f"dans les {len(quartiers)} quartiers suivant: {quartiers_str}"
+                    else:
+                        quartiers_str = f"dans les quartiers {quartiers_str}"
+
+                    slots = self.dispatch_message(
+                                    dispatcher, point_count, park_count, park_names,
+                                    f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
+                                    f"Près de la rue {value}, il y a {park_count} emplacements {quartiers_str}.",
+                                    f"Près de la rue {value}, il y a {park_count} emplacements {quartiers_str}.")
+                else:
+                    slots = self.dispatch_message(
+                                    dispatcher, point_count, park_count, park_names,
+                                    f"Malheureusement, il n'y a aucune borne près de la rue {value}.",
+                                    f"Il y a {park_count} emplacements près de la rue {value}.",
+                                    f"Il y a {park_count} emplacements près de la rue {value}.")
 
                 slots.append(SlotSet("city", city_name))
                 slots.append(SlotSet("quartier", quartier_names))
@@ -647,7 +663,6 @@ class ActionPresentChargingParks(Action):
 
     def get_charging_park_info(self, charging_park_name):
         """return nearest intersection (sorted by distance) to the specified charging park location"""
-        # TODO: do a single request with optional intersection
         # TODO: distance from metro (and other POI) if nearby
         d = self.graph.run(
             "MATCH (i:Intersection)<-[:NEARBY]-(park:ChargingPark {name:{parkName}})<-[:IN]-(point:ChargingPoint) \
@@ -668,26 +683,6 @@ class ActionPresentChargingParks(Action):
                 parkName=charging_park_name).data()
 
             return d[0]['address'], None, None, None
-    #
-    # def get_charging_park_info(self, charging_park_name):
-    #     """return nearest intersection (sorted by distance) to the specified charging park location"""
-    #     # TODO: do a single request with optional intersection
-    #     # TODO: distance from metro (and other POI) if nearby
-    #     d = self.graph.run(
-    #         "MATCH (i:Intersection)<-[:NEARBY]-(park:ChargingPark {name:{parkName}})<-[:IN]-(point:ChargingPoint) \
-    #          WITH i, park, distance(i.location, park.location) AS dist \
-    #          RETURN count(i), park.streetAddress AS address, i.name AS intersectionName, dist ORDER BY dist ASC LIMIT 10",
-    #          parkName=charging_park_name).data()
-    #
-    #     if d:
-    #         return d[0]['address'], d[0]['intersectionName'], d[0]['dist']
-    #     else:
-    #         d = self.graph.run(
-    #             "MATCH (park:ChargingPark {name:{parkName}})<-[:IN]-(point:ChargingPoint) \
-    #              RETURN park.streetAddress AS address",
-    #             parkName=charging_park_name).data()
-    #
-    #         return d[0]['address'], None, None
 
 
 class ActionSendChargingParks(Action):
@@ -701,38 +696,3 @@ class ActionSendChargingParks(Action):
 
         dispatcher.utter_message("Les informations sur la borne de recharge ont été envoyées!")
         return []
-
-
-class ActionRequestPlacePrecision(Action):
-
-    def name(self):
-        return "action_request_place_precision"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        # extract relevant slots
-        city = tracker.get_slot('city')
-        streets = tracker.get_slot('street')
-        quartiers = tracker.get_slot('quartier')
-
-        # make sure street and quartier are list of string
-        if streets:
-            streets = streets if isinstance(streets, list) else streets.split(',')
-        if quartiers:
-            quartiers = quartiers if isinstance(quartiers, list) else quartiers.split(',')
-
-        if streets and quartiers:
-            if len(streets) == 1 and len(quartiers) > 1:
-                self.ask_to_choose_from_quartiers(dispatcher, quartiers)
-
-        elif city and not quartiers and not streets:
-            if city == "Montréal":
-                dispatcher.utter_message(f"Vous cherchez dans quel quartier ou quelles rues?")
-
-        return []
-
-    def ask_to_choose_from_quartiers(self, dispatcher, quartiers):
-        quartiers_str = ", ".join(quartiers[:-1]) + " ou " + quartiers[-1]
-        dispatcher.utter_message(f"Dans lequel des {len(quartiers)} quartiers suivant: {quartiers_str}?")
