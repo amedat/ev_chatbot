@@ -1,0 +1,30 @@
+# *** The slots must come from the lookup tables ***
+# For lookup tables to be effective, there must be a few examples of matches in your training data.
+# Otherwise the model will not learn to use the lookup table match features.
+
+%[inform]('training': '40', 'testing': '10')
+    @[metro]
+    métro @[metro]
+    au métro @[metro]
+    près du métro @[metro]
+
+    @[quartier]
+    dans @[quartier]
+    quartier @[quartier]
+    dans le quartier @[quartier]
+
+@[metro]
+    ~[UQAM]
+    ~[Guy-Concordia]
+    ~[Beaudry]
+    ~[Bonaventure]
+    ~[Montmorency]
+    ~[Université-de-Montréal]
+
+@[quartier]
+    ~[Ahuntsic]
+    ~[Le Plateau]
+    ~[Villeray]
+    ~[Vieux-Montréal]
+    ~[Centre-Ville]
+    ~[Lachine]
