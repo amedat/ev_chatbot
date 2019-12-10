@@ -5,6 +5,13 @@ echo -----------------------------------------
 ./chatito/run_chatito_generator.sh
 
 echo -----------------------------------------
+echo Add Lookup Tables to NLU JSON
+echo -----------------------------------------
+if ! ./chatito/run_add_lookup_table.sh; then
+    exit -1
+fi
+
+echo -----------------------------------------
 echo Copy new NLU JSON over current Rasa NLU
 echo -----------------------------------------
 cp -v ./chatito/output/rasa_dataset_training.json ./data/
