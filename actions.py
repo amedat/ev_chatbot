@@ -44,6 +44,15 @@ class ChargingPlaceForm(FormAction):
         - deactivate the form
         """
 
+        # ---------------------------------------------------------------
+        # The part between these two lines is a custom part
+
+        # correct entity extracted if a slots has been requested,
+        # the extractor guess it wrong (frequent situation with one word message)
+        self.correct_entity_based_on_requested_slot(tracker)
+
+        # ---------------------------------------------------------------
+
         # activate the form
         events = self._activate_if_required(dispatcher, tracker, domain)
         # validate user input
@@ -52,7 +61,7 @@ class ChargingPlaceForm(FormAction):
         if Form(None) not in events:
 
             # ---------------------------------------------------------------
-            # The part between these two lines is the custom part
+            # The part between these two lines is a custom part
 
             events = self.search_charging_place(dispatcher, tracker, events)
 
@@ -78,6 +87,42 @@ class ChargingPlaceForm(FormAction):
                 events.extend(self.deactivate())
 
         return events
+
+    def correct_entity_based_on_requested_slot(self, tracker):
+        """
+        Check for an incorrectly set entity when the bot requested a specific entity.
+
+        Example:
+            - message text: Verdun
+            - requested_slot is 'quartier'
+            - message entity extracted: 'street' (Verdun street with 1.0 confidence)
+            - entity_linking module predict: 'quartier' (Verdun quartier with 1.0 confidence)
+
+            At this stage, the form knows it's looking for a 'quartier' (the NLU did not had this information).
+            We can safely assume that the entity extractor made a bad guess and reverting the decision.
+        """
+        requested_slot = tracker.get_slot('requested_slot')
+        if requested_slot:
+            # do we have a value for the requested slot?
+            requested_slot_value = next(tracker.get_latest_entity_values(requested_slot), None)
+            if not requested_slot_value:
+                # the latest message do not contain the requested slot,
+                # check for an extractor mistake and make the correction (if any)
+                for e in tracker.latest_message['entities']:
+                    e_type = e['entity']
+                    e_confidence = e['confidence']
+
+                    requested_entity = e['entity_linking'][requested_slot]
+                    requested_entity_confidence = requested_entity['confidence']
+
+                    if requested_entity_confidence >= e_confidence:
+                        # there is high probability that the extractor made an error,
+                        # make the correction by assigning the predicted entity to the requested slot
+                        e['entity'] = requested_slot
+                        e['value'] = requested_entity['value']
+                        e['confidence'] = requested_entity_confidence
+                        logger.debug(f"The form <{self.name()}> is reverting the decision of NLU "
+                                     f"based on requested_slot: {e_type} -> {requested_slot}\n")
 
     def search_charging_place(self, dispatcher, tracker, events):
         """
@@ -163,7 +208,7 @@ class ChargingPlaceForm(FormAction):
                     return []
 
                 # the city has some quartiers but user already specified one
-                if len(quartiers) == 1:
+                if quartiers and len(quartiers) == 1:
                     return []
 
         required_slots = ["city", "quartier", "street", "metro"]
@@ -503,7 +548,7 @@ class ChargingPlaceForm(FormAction):
 
                 quartiers = quartier_names if isinstance(quartier_names, list) else quartier_names.split(',')
 
-                if len(quartiers) > 1:
+                if quartiers and len(quartiers) > 1:
                     # utter the quartier list
                     quartiers_str = ", ".join(quartiers[:-1]) + " et " + quartiers[-1]
                     if len(quartiers) > 3:
@@ -568,8 +613,12 @@ class ChargingPlaceForm(FormAction):
     def one_street_quartier_charging_point(self, dispatcher, place_entities):
         """ Bornes sur le boulevard Saint-Laurent dans le quartier Rosemont """
 
-        quartier_name = [e for e in place_entities if e['entity'] == 'quartier'][0]['value']
-        street_name = [e for e in place_entities if e['entity'] == 'street'][0]['value']
+        try:
+            quartier_name = [e for e in place_entities if e['entity'] == 'quartier'][0]['value']
+            street_name = [e for e in place_entities if e['entity'] == 'street'][0]['value']
+        except IndexError as e:
+            # in case one of the entity is missing
+            return []
 
         d = self.graph.run("MATCH (:Street {name:{streetName}})-[:CROSS]->(i:Intersection)-[:IN]->(q:QuartierMontreal {name:{quartierName}}) \
                        MATCH (i)<-[:NEARBY]-(park:ChargingPark)<-[:IN]-(point:ChargingPoint) \
